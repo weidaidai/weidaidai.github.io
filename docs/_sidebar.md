@@ -1,4 +1,5 @@
 <!-- docs/_sidebar.md -->
 
 * [首页](/)
-* [指南](/guide)
+* [web知识](/guide)
+* [mysql]](/mysql)
