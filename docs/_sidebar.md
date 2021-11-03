@@ -2,4 +2,3 @@
 
 * [首页](/)
 * [web知识](/guide)
-* [mysql]](/mysql)
