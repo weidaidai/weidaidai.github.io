@@ -2,4 +2,5 @@
 
 * [golang基础知识](/)
 * [mysql简单语法](/guide)
-* * [redis事务处理](/gin/gin框架)
+* [redis事务处理](/gin/gin框架)
+* [创建文章链接](/ssk)
