@@ -1,4 +1,4 @@
 <!-- docs/_sidebar.md -->
 
-* [首页](/)
-* [web知识](/guide)
+* [golang基础知识](/)
+* [mysql简单语法](/guide)
