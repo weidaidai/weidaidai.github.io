@@ -22,6 +22,14 @@
 
 ## 开始使用
 
+创建按钮,并跳转到对应函数
+
+```javascript
+<button onclick="myFunction()">试一试</button>
+```
+
+![](images\test4.png)
+
 ```javascript
 <!DOCTYPE html>
 <html lang="en">
@@ -58,6 +66,31 @@
 
 ![](images/test.png)
 
+## let使用
+
+```javascript
+
+var  x = 10;
+// Here x is 10
+{  
+  var x = 2;
+  // Here x is 2
+}
+// Here x is 2
+```
+
+```javascript
+var  x = 10;
+// Here x is 10
+{  
+  let x = 2;
+  // Here x is 2
+}
+// Here x is 10
+```
+
+
+
 ## 字符串string
 
 ```javascript
@@ -79,12 +112,25 @@
     var xx="xx"
     console.log(xx.toUpperCase())
     console.log(xx.toLowerCase())
-    //获取下标位置
+    //获取下标位置的
     console.log(msg.indexOf("e"))
 </script>
 ```
 
 ![](D:\workspace\weidaidai.github.io\docs\images\test2.png)
+
+*模板字面量*提供了一种将变量和表达式插入字符串的简单方法。
+
+${...},${...}
+
+```
+ let firstName="小明";
+        let lastName="小华";
+        let text = `Welcome ${firstName}, ${lastName}!`;
+        //Welcome 小明, 小华!
+```
+
+
 
 ## 数组array
 
@@ -136,6 +182,96 @@
 ```
 
 网页输出内容为 56 hello
+
+## 数组的方法
+
+1.toString(),逗号形式分割字符串
+
+2.join()将所有数组中元素结合成字符串，还可以join("*")你想用的分隔符的方式隔开
+
+```javascript
+console.log(arr.join("*"));
+//1*2*3*myworld*****
+```
+
+3.增删元素
+
+```javascript
+    var f =["你xx","熊哈哈"];   
+   //增加和删除数组元素
+    f.pop();
+    //['你xx']
+    f.push("我骑着扫帚飞")
+    //['你xx', '我骑着扫帚飞']
+    f.pop();
+    //['你xx']
+    f.push("我骑着扫帚飞")
+    //['你xx', '我骑着扫帚飞']
+    //改变数组元素
+    f[0]="熊哈哈"
+    //['熊哈哈', '我骑着扫帚飞']
+    //返回数组长度
+    f.push("你xx");
+    //(3)['熊哈哈', '我骑着扫帚飞', '你xx']
+    //删除首个元素，推下索引
+    f.shift();
+    //['我骑着扫帚飞', '你xx']
+    //开头增加元素
+     f.unshift("一周又开始了");
+    //['一周又开始了', '我骑着扫帚飞', '你xx']
+   //删除指定元素,使用 delete 会在数组留下未定义的空洞
+    delete f[0];
+   //(3)[empty, '我骑着扫帚飞', '你xx']
+  //拼接数组第一个参数（2）定义了应添加新元素的位置（拼接）。第二个参数（0）定义应删除多少元素。
+    f.splice(1,0,"这一周快结束吧")
+
+```
+
+## 数组排列
+
+```javascript
+<button onclick="myFuncion()">点击</button>
+<script>
+sort()
+//正序排列
+var m =[1,3,2,4];
+m.sort();
+//(4) [1, 2, 3, 4]
+reverser()
+//反转
+console.log(m);
+//(4) [4, 3, 2, 1]
+var points=[100,25,87,7];
+    function myFunction() {
+        points.sort(function(a, b){return a - b});
+    }
+   // (4)[7, 25, 87, 100]
+</script>
+//对数组使用 Math.min()/max()
+//您可以使用 Math.min.apply 来查找数组中的最低值：和最高值
+
+```
+
+注意
+
+默认地，sort() 函数按照*字符串*顺序对值进行排序。
+
+该函数很适合字符串（"Apple" 会排在 "Banana" 之前）。
+
+不过，如果数字按照字符串来排序，则 "25" 大于 "100"，因为 "2" 大于 "1"。
+
+正因如此，sort() 方法在对数值排序时会产生不正确的结果。
+
+我们通过一个*比值函数*来修正此问题：
+
+```javascript
+var points=[100,25,87,7];
+    function myFunction() {
+        points.sort(function(a, b){return a - b});
+    }
+```
+
+
 
 ## 对象
 
