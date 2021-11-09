@@ -22,6 +22,10 @@
 
 ## 开始使用
 
+## 事件
+
+在下面的例子中，onclick 属性（以及代码）被添加到 <button> 元素：
+
 创建按钮,并跳转到对应函数
 
 ```javascript
@@ -29,6 +33,32 @@
 ```
 
 ![](images\test4.png)
+
+JavaScript 代码通常有很多行。事件属性调用函数更为常见：
+
+比如
+
+```javascript
+<h1>JavaScript 事件</h1>
+
+<p>点击按钮来显示日期。</p>
+
+<button onclick="displayDate()">时间是？</button>
+
+<script>
+function displayDate() {
+    document.getElementById("demo").innerHTML = Date();
+}
+</script>
+
+<p id="demo"></p>
+```
+
+getElementById() 方法可返回对拥有指定 ID 的第一个对象的引用。
+
+```
+document.getElementById(id)
+```
 
 ```javascript
 <!DOCTYPE html>
@@ -132,7 +162,7 @@ var x = 10;
 
 
 
-## 字符串string
+## string
 
 ```javascript
 <script>
@@ -169,6 +199,57 @@ ${...},${...}
         let lastName="小华";
         let text = `Welcome ${firstName}, ${lastName}!`;
         //Welcome 小明, 小华!
+```
+
+## string方法
+
+search（）可以返回字符串位置
+
+```
+var str="我来自桂林这个美丽的地方";
+var p=str.search("我");
+-----0
+```
+
+slice（）可以裁剪string
+
+```
+var s=str.slice(1,3);
+-----来自
+
+```
+
+
+
+indexOf() 方法返回字符串中指定文本*首次*出现的索引（位置）
+
+```javascript
+var m=str.indexOf("h");
+----
+```
+
+lastIndexOf() 方法返回指定文本在字符串中*最后*一次出现的索引：
+
+如果未找到文本， indexOf() 和 lastIndexOf() 均返回 -1。
+
+replace() 方法用另一个值替换在字符串中指定的值：
+
+replace("原来的值"，"修改的值") 
+
+trim() 方法删除字符串两端的空白符：
+
+charAt() 方法返回字符串中指定下标（位置）的字符串：
+
+str.charAt(0)；
+
+-----我
+
+charCodeAt() 方法返回字符串中指定索引的字符 unicode 编码：
+
+```
+var str = "HELLO WORLD";
+
+str.charCodeAt(0);         // 返回 72
 ```
 
 ## 运算
