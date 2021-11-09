@@ -66,7 +66,33 @@
 
 ![](images/test.png)
 
-## let使用
+## 变量使用
+
+定义变量
+
+```
+var xx="字符串";
+var mm=18;
+```
+
+```javascript
+<script>
+    //定义一个unfine变量
+    var xx;
+    xx="对xx进行赋值"
+    //可以声明多个变量并声明，用逗号隔开
+    //可以使用运算符号，字符使用可以相联
+    var m="xiaoming"+""+"小花";
+    //xiaoming 小花
+    //如果把要给数值放入引号中，其余数值会被视作字符串并被级联。
+    var a="9"+8+7;
+    //输出987
+</script>
+```
+
+
+
+## let和const使用
 
 ```javascript
 
@@ -87,6 +113,21 @@ var  x = 10;
   // Here x is 2
 }
 // Here x is 10
+```
+
+```javascript
+var x = 10;
+    // 此处，x 为 10
+    {
+        const x = 6;
+        // 此处，x 为 6
+    }
+    // 此处，x 为 10
+    //const需要声明并赋值，不可以单独声明
+    //const可修改数组元素和添加
+    const o=["小白","小红",8,9];
+    o[0]="小绿"
+    o.push("小黄")
 ```
 
 
@@ -128,6 +169,16 @@ ${...},${...}
         let lastName="小华";
         let text = `Welcome ${firstName}, ${lastName}!`;
         //Welcome 小明, 小华!
+```
+
+## 运算
+
+运算和其他语言差不多
+
+```javascript
+    var x = 5;
+    var z = Math.pow(x,2);//相当于5*5 幂运算
+    var z = x ** 2;  //相当于5*5=25
 ```
 
 
@@ -306,3 +357,31 @@ var points=[100,25,87,7];
 18岁学数学
 
 John现在50岁
+
+## switch
+
+```javascript
+ <button onclick="myFunction()">点击</button>
+<p id="demo"></p>
+<body>
+<script>
+    function myFunction()
+    {
+        var x;
+        var d=new Date().getDay();
+        switch (d)
+        {
+            case 6:x="今天是星期六";
+                break;
+            case 0:x="今天是星期日";
+                break;
+            default:
+                x="期待周末";
+        }
+        document.getElementById("demo").innerHTML=x;
+    }
+</script>
+
+```
+
+以上都不是输出为--期待周末

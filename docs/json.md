@@ -36,7 +36,7 @@ console.log(str)
 </script>
 ```
 
-使用 XMLHttpRequest 从服务器获取数据：
+使用 XMLHttpRequest() 从服务器获取数据：
 
 ```javascript
 
@@ -50,6 +50,8 @@ xmlhttp.onreadystatechange = function() {
 xmlhttp.open("GET", "/src/js/json_demo.txt", true);
 xmlhttp.send();
 ```
+
+## 用 JSON.parse() 解析数据，
 
 在java script 中可以用json来修改
 
