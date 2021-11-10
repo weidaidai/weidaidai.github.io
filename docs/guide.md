@@ -294,3 +294,38 @@ IN 操作符允许我们在 WHERE 子句中规定多个值。
 SELECT *FROM 表名 WHERE 列名 IN (value1,value2,...)
 ```
 
+#### 多表查询
+
+查询多张表的语法是：`SELECT * FROM <表1> <表2>`。
+
+## join   
+
+连接查询对多个表进行JOIN运算，简单地说，就是先确定一个主表作为结果集，然后，把其他表的行有选择性地“连接”在主表结果集上。
+
+SELECT COUNT(*) FROM 表名;
+
+JOIN 按照功能大致分为如下三类：
+
+- **INNER JOIN（内连接,或等值连接）**：获取两个表中字段匹配关系的记录。
+- **LEFT JOIN（左连接）：**获取左表所有记录，即使右表没有对应匹配的记录。
+- **RIGHT JOIN（右连接）：** 与 LEFT JOIN 相反，用于获取右表所有记录，即使左表没有对应匹配的记录
+
+有时为了得到完整的结果，我们需要从两个或更多的表中获取结果。我们就需要执行 join。
+
+```
+FROM 表名1 INNER JOIN 表名2 ON 表名.主键 = Orders.主键
+ORDER BY Persons.LastName
+```
+
+```sql
+--创建两个表
+联合查询某列
+ SELECT a.use_gener, b.use_state FROM user_info a INNER JOIN score b ON a.use_id = b.use_id;
+```
+
+![score](\images\score.png)<img src="D:\workspace\weidaidai.github.io\docs\images\use_info.png" alt="use_info" />
+
+查询如下
+
+![test11](images\test11.png)
+
