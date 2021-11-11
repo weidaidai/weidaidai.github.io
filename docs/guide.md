@@ -148,7 +148,14 @@ update(表名)set修改字段=值，。。。where（主键不变值或者其他
   select *from user_info where use_height>=1;
 ```
 
-
+```sql
+SELECT field1, field2,...fieldN FROM table_name1, table_name2...
+[WHERE condition1 [AND [OR]] condition2.....
+ -- WHERE BINARY 可以区分大小写
+ -- SELECT * from 表一，表二 WHERE BINARY 指定的表列="内容";
+ --可以找出大写的或者小写的
+ 
+```
 
 ## delete删除表内数据
 
@@ -267,7 +274,7 @@ sql 中叫 top
 ```sql
 SELECT * FROM user_info LIMIT 1,3;
 --查找1-3列的数据
---搭配offset
+--搭配offset可以跨行
 SELECT * FROM user_info LIMIT 5 OFFSET 2 ;
 --从第二行开始显示
 ```
@@ -283,7 +290,7 @@ LIMIT number
 BETWEEN 操作符在 WHERE 子句中使用，作用是选取介于两个值之间的数据范围。
 
 ```sql
-SELECT * FROM Persons WHERE use_id BETWEEN 'xx' AND 'xx'
+SELECT * FROM 表名 WHERE 表列 BETWEEN 'xx' AND 'xx'
 ```
 
 ## in
@@ -294,7 +301,7 @@ IN 操作符允许我们在 WHERE 子句中规定多个值。
 SELECT *FROM 表名 WHERE 列名 IN (value1,value2,...)
 ```
 
-#### 多表查询
+## 多表查询
 
 查询多张表的语法是：`SELECT * FROM <表1> <表2>`。
 
@@ -304,11 +311,7 @@ SELECT *FROM 表名 WHERE 列名 IN (value1,value2,...)
 
 SELECT COUNT(*) FROM 表名;
 
-JOIN 按照功能大致分为如下三类：
-
 - **INNER JOIN（内连接,或等值连接）**：获取两个表中字段匹配关系的记录。
-- **LEFT JOIN（左连接）：**获取左表所有记录，即使右表没有对应匹配的记录。
-- **RIGHT JOIN（右连接）：** 与 LEFT JOIN 相反，用于获取右表所有记录，即使左表没有对应匹配的记录
 
 有时为了得到完整的结果，我们需要从两个或更多的表中获取结果。我们就需要执行 join。
 
@@ -319,13 +322,41 @@ ORDER BY Persons.LastName
 
 ```sql
 --创建两个表
-联合查询某列
+连接查询
  SELECT a.use_gener, b.use_state FROM user_info a INNER JOIN score b ON a.use_id = b.use_id;
 ```
 
-![score](\images\score.png)<img src="D:\workspace\weidaidai.github.io\docs\images\use_info.png" alt="use_info" />
+![score](images\score.png)<img src="D:\workspace\weidaidai.github.io\docs\images\use_info.png" alt="use_info" />
 
 查询如下
 
 ![test11](images\test11.png)
+
+**LEFT JOIN（左连接）：**获取左表所有记录，即使右表没有对应匹配的记录。
+
+以 **runoob_tbl** 为左表，**tcount_tbl** 为右表
+
+runoob_tb1表
+
+![test12](images\test12.png)
+
+tcount_tb1表
+
+![test13](images\test13.png)
+
+```sql
+SELECT a.runoob_id, a.runoob_author, b.runoob_count FROM runoob_tbl a LEFT JOIN tcount_tbl b ON a.runoob_author = b.runoob_author;
+```
+
+![test14](images\test14.png)
+
+**RIGHT JOIN（右连接）：** 与 LEFT JOIN 相反，用于获取右表所有记录，即使左表没有对应匹配的记录
+
+```sql
+SELECT a.runoob_id, a.runoob_author, b.runoob_count FROM runoob_tbl a RIGHT JOIN tcount_tbl b ON a.runoob_author = b.runoob_author;
+```
+
+以 **runoob_tbl** 为左表，**tcount_tbl** 为右表
+
+![test15](images\test15.png)
 
