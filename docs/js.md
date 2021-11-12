@@ -1,26 +1,20 @@
 #   javaScript
 
-##    
+JavaScript的用途
+1. **HTML** 定义了网页的内容
 
-1. ```bash
-      JavaScript的用途
-   1. **HTML** 定义了网页的内容
-   
-   2. **CSS** 描述了网页的布局
-   
-   3. **JavaScript** 控制了网页的行为
-   
-      JavaScript 显示数据
-   
-      JavaScript 可以通过不同的方式来输出数据：
-   
-      - 使用 **window.alert()** 弹出警告框。
-      - 使用 **document.write()** 方法将内容写到HTML 文档中。
-      - 使用 **innerHTML** 写入到 HTML 元素。
-      - 使用 **console.log()** 写入到浏览器的控制台
-   ```
+2. **CSS** 描述了网页的布局
 
-## 开始使用
+3. **JavaScript** 控制了网页的行为
+
+   JavaScript 显示数据
+
+   JavaScript 可以通过不同的方式来输出数据：
+
+   - 使用 **window.alert()** 弹出警告框。
+   - 使用 **document.write()** 方法将内容写到HTML 文档中。
+   - 使用 **innerHTML** 写入到 HTML 元素。
+   - 使用 **console.log()** 写入到浏览器的控制台
 
 ## 事件
 
@@ -120,8 +114,6 @@ var mm=18;
 </script>
 ```
 
-
-
 ## let和const使用
 
 ```javascript
@@ -160,8 +152,6 @@ var x = 10;
     o.push("小黄")
 ```
 
-
-
 ## string
 
 ```javascript
@@ -190,7 +180,7 @@ var x = 10;
 
 ![](D:\workspace\weidaidai.github.io\docs\images\test2.png)
 
-*模板字面量*提供了一种将变量和表达式插入字符串的简单方法。
+模板字面量*提供了一种将变量和表达式插入字符串的简单方法。
 
 ${...},${...}
 
@@ -261,8 +251,6 @@ str.charCodeAt(0);         // 返回 72
     var z = Math.pow(x,2);//相当于5*5 幂运算
     var z = x ** 2;  //相当于5*5=25
 ```
-
-
 
 ## 数组array
 
