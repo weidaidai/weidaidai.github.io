@@ -104,7 +104,7 @@ alter table tb_test2 drop change_use2;##删除一个存在
 --不提醒已删除，重复删除会报错
 ```
 
-添加列add
+添加列add，最好有约束条件
 
 ```sql
 alter table user_info add use_phone varchar(20) not null comment'添加';
@@ -187,7 +187,7 @@ SELECT DISTINCT 列名称 FROM 表名称
 
 ```sql
 SELECT distinct user_decribe FROM user_info;
---会把同列中重复的部分删除
+--会把同列中重复的部分不显示
 ```
 
 
@@ -360,3 +360,32 @@ SELECT a.runoob_id, a.runoob_author, b.runoob_count FROM runoob_tbl a RIGHT JOIN
 
 ![test15](images\test15.png)
 
+## 索引
+
+索引分单列索引和组合索引。单列索引，即一个索引只包含单个列，一个表可以有多个单列索引，但这不是组合索引。组合索引，即一个索引包含多个列。
+
+创建索引时，你需要确保该索引是应用在 SQL 查询语句的条件(一般作为 WHERE 子句的条件)。
+
+## 普通索引
+
+#### 创建索引
+
+这是最基本的索引，它没有任何限制。它有以下几种创建方式：
+
+```sql
+CREATE INDEX indexName ON 表名 (表列名)
+```
+
+#### 删除索引的语法
+
+```
+DROP INDEX [indexName] ON 表名; 
+```
+
+如果是CHAR，VARCHAR类型，length可以小于字段实际长度；如果是BLOB和TEXT类型，必须指定 length。
+
+#### 修改表结构(添加索引)
+
+```
+ALTER table 表名 ADD INDEX indexName(表列名)
+```

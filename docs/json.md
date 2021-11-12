@@ -1,4 +1,4 @@
-## json
+## JSON
 
 ## 用途
 
@@ -122,3 +122,102 @@ var peolpe,x
     //华为
 ```
 
+## YAML
+
+### 基本语法
+
+- 大小写敏感
+- 使用缩进表示层级关系
+- 缩进不允许使用tab，只允许空格
+- 缩进的空格数不重要，只要相同层级的元素左对齐即可
+- '#'表示注释
+
+YAML 支持以下几种数据类型：
+
+- 对象：键值对的集合，又称为映射（mapping）/ 哈希（hashes） / 字典（dictionary）
+- 数组：一组按次序排列的值，又称为序列（sequence） / 列表（list）
+- 纯量（scalars）：单个的、不可再分的值
+
+### 基本使用
+
+```yaml
+#对象使用
+key:
+  child-key: value
+  child-key2: value2
+
+  #复杂的对象格式
+
+  ?
+    -complexkey1
+    -complexkey2
+  :
+    -complexvalue1
+    -complexvalue2
+
+#yaml数组结构-开头
+-
+ -a
+ -b
+ -c
+#复杂数组
+complexarr:
+  -
+    id: 1
+    name: "小明"
+    sex: '男'
+  -
+    id: 2
+    name: "小花"
+    sex: "女"
+    
+#流体方式表示
+complexarr: [{ id: 1,name: "小明",sex: '男'},{id: 2,name: "小花", sex: "女"}]
+```
+
+```yaml
+#复杂类型
+languages:
+  - Ruby
+  - Perl
+  - Python
+websites:
+  YAML: yaml.org
+  Ruby: ruby-lang.org
+  Python: python.org
+  Perl: use.perl.org
+
+#转json格式
+  {
+    "languages": [
+        "Ruby",
+        "Perl",
+        "Python"
+    ],
+    "websites": {
+      "YAML": "yaml.org",
+      "Ruby": "ruby-lang.org",
+      "Python": "python.org",
+      "Perl": "use.perl.org"
+    }
+  }
+  
+```
+
+### 引用
+
+**&** 锚点和 ***** 别名，可以用来引用:
+
+```yaml
+defaults: &defaults
+  adapter:  postgres
+  host:     localhost
+test:
+  database: myapp_test
+  <<: *defaults
+#相当于
+test:
+  database: myapp_test
+  adapter:  postgres
+  host:     localhost
+```
