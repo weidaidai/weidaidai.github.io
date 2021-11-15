@@ -1,21 +1,14 @@
 #   javaScript
-
 JavaScript的用途
-
 1. HTML 定义了网页的内容
-
 2. CSS 描述了网页的布局
-
 3. JavaScript 控制了网页的行为
-
-   JavaScript 显示数据
-
-   JavaScript 可以通过不同的方式来输出数据：
-
-   - 使用 window.alert() 弹出警告框。
-   - 使用 document.write() 方法将内容写到HTML 文档中。
-   - 使用 innerHTML 写入到 HTML 元素。
-   - 使用 console.log()写入到浏览器的控制台
+JavaScript 显示数据
+JavaScript 可以通过不同的方式来输出数据：
+使用 window.alert() 弹出警告框。
+使用 document.write() 方法将内容写到HTML 文档中。
+使用 innerHTML 写入到 HTML 元素。
+使用 console.log()写入到浏览器的控制台
 
 ## 事件
 
@@ -27,7 +20,7 @@ JavaScript的用途
 <button onclick="myFunction()">试一试</button>
 ```
 
-![](D:\workspace\weidaidai.github.io\docs\images\test4.png)
+![](images\test4.png)
 
 JavaScript 代码通常有很多行。事件属性调用函数更为常见：
 
@@ -178,7 +171,7 @@ var x = 10;
 </script>
 ```
 
-![](D:\workspace\weidaidai.github.io\docs\images\test2.png)
+![](images\test2.png)
 
 模板字面量*提供了一种将变量和表达式插入字符串的简单方法。
 
@@ -266,7 +259,7 @@ str.charCodeAt(0);         // 返回 72
 </script>
 ```
 
-![](D:\workspace\weidaidai.github.io\docs\images\test3.png)
+![](images\test3.png)
 
 以上用浏览器控制台方式查看元素内容
 
