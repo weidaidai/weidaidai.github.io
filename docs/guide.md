@@ -1,6 +1,8 @@
 ## sql语句的在mysql基本操作
 
 ## 创建数据库和判断
+数据库中column和field的区别
+Field: smallest unit of application data recognized by system software指数据字段，数据记录中已有定义的部分，例如数据库表中的一列，但一般特指某列某行（数据库里的特定一格）当我说field的时候，不仅要说特定格里的值还要说column name a column is a set of data values of a particular simple type, one value for each row of the database.指列，一列所有数据
 
 drop database if exists testdb;//不存在就创建
 
