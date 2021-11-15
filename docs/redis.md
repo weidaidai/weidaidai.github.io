@@ -110,6 +110,7 @@ OK
 ![](images\list.png)
 
 ```bash
+#增lpush命令将一个或多个值插入到列表头部。 如果 key 不存在，一个空列表会被创建并执行 LPUSH 操作。 当 key 存在但不是列表类型时，返回一个错误。 查lrange
 127.0.0.1:6379[2]> lpush name xiaowei #增加创建
 (integer) 1
 127.0.0.1:6379[2]> lpush name xiaohua#增加
@@ -123,6 +124,69 @@ OK
 1) "xiaohong"
 2) "xiaohua"
 3) "xiaowei"
+#移除第一个元素bloop
+127.0.0.1:6379[2]> blpop key2 0 #要删除的下标，并显示对应元素
+1) "key2"
+2) "mysql"
+127.0.0.1:6379[2]> blpop key2 2
+1) "key2"
+2) "xiaoming"
+127.0.0.1:6379[2]> blpop key2 3 #删除不存在，超时退出
+(nil)
+(3.05s)
+#移除最后一个元素brpop
+127.0.0.1:6379> lrange key2 1 3
+1) "redis"
+2) "mysql"
+127.0.0.1:6379> brpop key2 1
+1) "key2"
+2) "mysql"
+127.0.0.1:6379> brpop key2 1
+1) "key2"
+2) "redis"
+127.0.0.1:6379> brpop key2 0
+1) "key2"
+2) "mogondb"
+127.0.0.1:6379> brpop key2 3
+(nil)
+(3.01s)
+#通过lindex索引查询
+127.0.0.1:6379> lpush mylist "hello"
+(integer) 1
+127.0.0.1:6379> lpush mylist "world"
+(integer) 2
+127.0.0.1:6379> lindex mylist 0
+"world"
+127.0.0.1:6379> lindex mylist -1
+"hello"
+#rpush 插入值位于pivot（中间）或者之前或者之后随机
+127.0.0.1:6379> rpush mylist "tree"
+(integer) 4
+127.0.0.1:6379> lrange mylist 0 -1
+1) "two"
+2) "world"
+3) "hello"
+4) "tree"
+127.0.0.1:6379> lrange mylist 0 3
+1) "two"
+2) "world"
+3) "hello"
+4) "tree"
+#获取list长度 llen
+127.0.0.1:6379> llen mylist
+(integer) 4
+#移除lsit第一个元素并返回的对应元素
+127.0.0.1:6379> lpop mylist
+"mysql"
+127.0.0.1:6379> lpop list2 #没有返回nil
+(nil)
+# Lpushx 将一个值插入到已存在的列表头部，列表不存在时操作无效。
+127.0.0.1:6379> lpushx mylist "插入"
+(integer) 5
+127.0.0.1:6379> lpushx list2 "插入"
+(integer) 0
+127.0.0.1:6379> lrange list2 0 -1
+(empty array)``
 ```
 
 
@@ -138,7 +202,8 @@ hash 是一个键值(key=>value)对集合。
 相当于map
 
 ```bash
-创建哈希表的key vul
+#创建哈希表的key vul
+#插hset 查hget
 127.0.0.1:6379> hset user name "dongdong"#插入数据
 (integer) 1
 127.0.0.1:6379> hgetall user
