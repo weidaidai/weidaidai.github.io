@@ -81,7 +81,9 @@ OK
 OK
 127.0.0.1:6379> exists name//以存在的key
 (integer) 1
-127.0.0.1:6379> keys * #查看所有
+
+#查看所有
+127.0.0.1:6379> keys * 
 1) "age"
 2) "name"
 127.0.0.1:6379> expire name 10#设置过期时间单位秒
@@ -97,6 +99,8 @@ OK
 (integer) 0
 127.0.0.1:6379[2]> get name
 "1"
+#加 incrby+key+val
+#减 decrby+key+val
 ```
 
 ### list（列表）
@@ -581,8 +585,174 @@ geohash 返回经纬11个字符串
 5) "fangsan"
 ```
 
-后续。。。。
+
 
 #### Hyperloglog 基数统计
 
+基数 （不重复的元素）=5可以接收的误差，可容错
+
+a{1，2，3，4}
+
+b{5，5，6，2，7}
+
+> 应用例如一个重复访问同一个网站的用户，一般都是用set保存用户的id，有可能会重复大量重复id 基数统计就可以计数算同一个人
+>
+> 占用内存固定，只需12kb
+
+```bash
+#添加元素pfadd
+127.0.0.1:6379> pfadd mykey1  a b c d e
+(integer) 1
+127.0.0.1:6379> pfadd mykey2  a b c w v
+(integer) 1
+#统计元素pfcount
+127.0.0.1:6379> pfcount mykey1
+(integer) 5
+127.0.0.1:6379> pfcount mykey2
+(integer) 5
+#合并不重复pfmerge
+127.0.0.1:6379> pfmerge mykey3 mykey1 mykey2
+OK
+127.0.0.1:6379> pfcount mykey3
+(integer) 7
+```
+
 #### bitmap 位图场景
+
+后续 补坑。。。。
+
+### 事务处理
+
+原子性 （白话：同时成功，同时失败）redis 单条命令原子性，每个命令都会被序列化，但是事务不保证
+
+隔离性 redis没有隔离性，只有发起命令的时候才会执行
+
+开启事务（mutli）
+
+命令入队()
+
+执行事务(exec)
+
+```bash
+#开启事务
+127.0.0.1:6379> multi
+OK
+#命令入队
+127.0.0.1:6379(TX)> set key1 val1
+QUEUED
+127.0.0.1:6379(TX)> set key2 val2
+QUEUED
+127.0.0.1:6379(TX)> set key3 val3
+QUEUED
+#执行事务
+127.0.0.1:6379(TX)> exec
+1) OK
+2) OK
+3) OK
+```
+
+> 放弃事务 discard
+
+```bash
+127.0.0.1:6379> multi
+OK
+127.0.0.1:6379(TX)> set k1 v1
+QUEUED
+127.0.0.1:6379(TX)> set k2 v2
+QUEUED
+127.0.0.1:6379(TX)> get k3
+QUEUED
+127.0.0.1:6379(TX)> discard
+OK
+127.0.0.1:6379> get k3 #前面的命令就无法执行
+(nil)
+```
+
+> 编译型异常，事务命令也无法执行
+>
+> 运行异常，只有错误语法的不会被执行，其他正确命令可以执行,会抛出错误
+
+```bash
+127.0.0.1:6379> multi
+OK
+127.0.0.1:6379(TX)> set kw1 v1
+QUEUED
+127.0.0.1:6379(TX)> set kw2 v2
+QUEUED
+127.0.0.1:6379(TX)> incr kw2
+QUEUED
+127.0.0.1:6379(TX)> get kw2
+QUEUED
+127.0.0.1:6379(TX)> exec
+1) OK
+2) OK
+3) (error) ERR value is not an integer or out of range #抛出错误
+4) "v2"
+```
+
+###  Watch 
+
+> Redis Watch 命令用于监视一个(或多个) key ，如果在事务执行之前这个(或这些) key 被其他命令所改动，那么事务将被打断
+
+redis Watch 命令基本语法如下：
+
+```
+WATCH key [key ...]
+```
+
+```bash
+
+##############多用于悲观锁#############
+
+####监听数据的时候数据没有被改动#################
+127.0.0.1:6379> set money 100
+OK
+127.0.0.1:6379> watch money #监控事务
+OK
+127.0.0.1:6379> multi 
+OK
+127.0.0.1:6379(TX)> decrby money 1
+QUEUED
+127.0.0.1:6379(TX)> decrby money 1
+QUEUED
+127.0.0.1:6379(TX)> incrby money 3
+QUEUED
+127.0.0.1:6379(TX)> exec
+1) (integer) 99
+2) (integer) 98
+3) (integer) 101
+#####在开始事务的时候 另一个用户修改###
+127.0.0.1:6379> get money
+"104"
+127.0.0.1:6379> incrby money 10
+(integer) 114
+######这时候开始执行事务#######
+127.0.0.1:6379> watch money
+OK
+127.0.0.1:6379> multi
+OK
+127.0.0.1:6379(TX)> decrby money 1
+QUEUED
+127.0.0.1:6379(TX)> decrby money 1
+QUEUED
+127.0.0.1:6379(TX)> exec   ###执行失败
+(nil)
+#要重新监听先解锁 unwatch +key
+```
+
+### 配置文件
+
+看不完 
+
+### 持久化RDB
+
+### 持久化AOF
+
+### redis订阅发布
+
+### 哨兵
+
+### 缓存雪崩
+
+
+
