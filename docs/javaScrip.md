@@ -1,36 +1,30 @@
-#   javaScript
+javaScript
 
-JavaScript的用途
-1. **HTML** 定义了网页的内容
+HTML定义了网页的内容
 
-2. **CSS** 描述了网页的布局
+CSS描述了网页的布局
 
-3. **JavaScript** 控制了网页的行为
+JavaScript 控制了网页的行为
 
-   JavaScript 显示数据
+JavaScript 显示数据
 
-   JavaScript 可以通过不同的方式来输出数据：
+JavaScript 可以通过不同的方式来输出数据：
 
-   - 使用 **window.alert()** 弹出警告框。
-   - 使用 **document.write()** 方法将内容写到HTML 文档中。
-   - 使用 **innerHTML** 写入到 HTML 元素。
-   - 使用 **console.log()** 写入到浏览器的控制台
+使用 window.alert()弹出警告框。
+使用 document.write()方法将内容写到HTML 文档中。
+使用 nnerHTML** 写入到 HTML 元素。
+使用 console.log() 写入到浏览器的控制台
 
-## 事件
+> 事件
 
-在下面的例子中，onclick 属性（以及代码）被添加到 <button> 元素：
+> 在下面的例子中，onclick 属性（以及代码）被添加到 <button> 元素：
 
-创建按钮,并跳转到对应函数
-
-```javascript
-<button onclick="myFunction()">试一试</button>
-```
-
-![](images\test4.png)
-
-JavaScript 代码通常有很多行。事件属性调用函数更为常见：
-
-比如
+> 创建按钮,并跳转到对应函数
+>
+> ```javascript
+> <button onclick="myFunction()">试一试</button>
+> getElementById() 方法可返回对拥有指定 ID 的第一个对象的引用。
+> ```
 
 ```javascript
 <h1>JavaScript 事件</h1>
@@ -48,10 +42,8 @@ function displayDate() {
 <p id="demo"></p>
 ```
 
-getElementById() 方法可返回对拥有指定 ID 的第一个对象的引用。
-
-```
-document.getElementById(id)
+```javascript
+  document.getElementById(id)
 ```
 
 ```javascript
@@ -90,16 +82,13 @@ document.getElementById(id)
 
 ![](images/test.png)
 
-## 变量使用
+### 变量使用
 
-定义变量
-
-```
-var xx="字符串";
-var mm=18;
-```
+> 定义变量
 
 ```javascript
+var xx="字符串";
+var mm=18;
 <script>
     //定义一个unfine变量
     var xx;
@@ -114,10 +103,11 @@ var mm=18;
 </script>
 ```
 
-## let和const使用
+### let和const使用
+
+> var声明
 
 ```javascript
-
 var  x = 10;
 // Here x is 10
 {  
@@ -126,6 +116,8 @@ var  x = 10;
 }
 // Here x is 2
 ```
+
+> let声明
 
 ```javascript
 var  x = 10;
@@ -136,6 +128,8 @@ var  x = 10;
 }
 // Here x is 10
 ```
+
+> const声明
 
 ```javascript
 var x = 10;
@@ -152,7 +146,7 @@ var x = 10;
     o.push("小黄")
 ```
 
-## string
+### string
 
 ```javascript
 <script>
@@ -178,81 +172,77 @@ var x = 10;
 </script>
 ```
 
-![](D:\workspace\weidaidai.github.io\docs\images\test2.png)
+![](images\test2.png)
 
-模板字面量*提供了一种将变量和表达式插入字符串的简单方法。
+> 模板字面量*提供了一种将变量和表达式插入字符串的简单方法。
 
-${...},${...}
+> ${...},${...}
 
-```
+```javascript
  let firstName="小明";
         let lastName="小华";
         let text = `Welcome ${firstName}, ${lastName}!`;
         //Welcome 小明, 小华!
 ```
 
-## string方法
+### string方法
 
-search（）可以返回字符串位置
+> search（）可以返回字符串位置
 
-```
+```javascript
 var str="我来自桂林这个美丽的地方";
 var p=str.search("我");
 -----0
 ```
 
-slice（）可以裁剪string
+> slice（）可以裁剪string
 
-```
+```javascript
 var s=str.slice(1,3);
 -----来自
 
 ```
 
-
-
-indexOf() 方法返回字符串中指定文本*首次*出现的索引（位置）
+> indexOf() 方法返回字符串中指定文本*首次*出现的索引（位置）
 
 ```javascript
 var m=str.indexOf("h");
 ----
 ```
 
-lastIndexOf() 方法返回指定文本在字符串中*最后*一次出现的索引：
+>lastIndexOf() 方法返回指定文本在字符串中*最后*一次出现的索引：
 
-如果未找到文本， indexOf() 和 lastIndexOf() 均返回 -1。
+> 如果未找到文本， indexOf() 和 lastIndexOf() 均返回 -1。
 
-replace() 方法用另一个值替换在字符串中指定的值：
+> replace() 方法用另一个值替换在字符串中指定的值：
 
-replace("原来的值"，"修改的值") 
+> replace("原来的值"，"修改的值") 
 
-trim() 方法删除字符串两端的空白符：
+> trim() 方法删除字符串两端的空白符：
 
-charAt() 方法返回字符串中指定下标（位置）的字符串：
+> charAt() 方法返回字符串中指定下标（位置）的字符串：
 
-str.charAt(0)；
+> str.charAt(0)；
 
------我
+> -----我
 
-charCodeAt() 方法返回字符串中指定索引的字符 unicode 编码：
+> charCodeAt() 方法返回字符串中指定索引的字符 unicode 编码：
 
-```
+```javascript
 var str = "HELLO WORLD";
 
 str.charCodeAt(0);         // 返回 72
 ```
 
-## 运算
-
-运算和其他语言差不多
+### 运算
 
 ```javascript
-    var x = 5;
+  var x = 5;
     var z = Math.pow(x,2);//相当于5*5 幂运算
     var z = x ** 2;  //相当于5*5=25
 ```
 
-## 数组array
+### 数组array
 
 ```javascript
 <script>
@@ -266,9 +256,7 @@ str.charCodeAt(0);         // 返回 72
 </script>
 ```
 
-![](images\test3.png)
-
-以上用浏览器控制台方式查看元素内容
+>以上用浏览器控制台方式查看元素内容
 
 可以使用 document.getElementById(*id*) 方法。
 
@@ -301,20 +289,20 @@ str.charCodeAt(0);         // 返回 72
 </html>
 ```
 
-网页输出内容为 56 hello
+> 网页输出内容为 56 hello
 
-## 数组的方法
+### 数组的方法
 
-1.toString(),逗号形式分割字符串
+>1.toString(),逗号形式分割字符串
 
-2.join()将所有数组中元素结合成字符串，还可以join("*")你想用的分隔符的方式隔开
+> 2.join()将所有数组中元素结合成字符串，还可以join("*")你想用的分隔符的方式隔开
 
 ```javascript
 console.log(arr.join("*"));
 //1*2*3*myworld*****
 ```
 
-3.增删元素
+>3.增删元素
 
 ```javascript
     var f =["你xx","熊哈哈"];   
@@ -344,10 +332,9 @@ console.log(arr.join("*"));
    //(3)[empty, '我骑着扫帚飞', '你xx']
   //拼接数组第一个参数（2）定义了应添加新元素的位置（拼接）。第二个参数（0）定义应删除多少元素。
     f.splice(1,0,"这一周快结束吧")
-
 ```
 
-## 数组排列
+### 数组排列
 
 ```javascript
 <button onclick="myFuncion()">点击</button>
@@ -369,10 +356,9 @@ var points=[100,25,87,7];
 </script>
 //对数组使用 Math.min()/max()
 //您可以使用 Math.min.apply 来查找数组中的最低值：和最高值
-
 ```
 
-注意
+>注意
 
 默认地，sort() 函数按照*字符串*顺序对值进行排序。
 
@@ -391,9 +377,7 @@ var points=[100,25,87,7];
     }
 ```
 
-
-
-## 对象
+### 对象
 
 类似go 中map， py中的Dictionary
 
@@ -418,19 +402,20 @@ var points=[100,25,87,7];
         document.getElementById("demo1").innerHTML =
             person.firstName + " 现在 " + person.age + " 岁。";
     </script>
-
 ```
 
+```bash
 输出为
 
 18岁学数学
 
 John现在50岁
+```
 
-## switch
+### switch
 
 ```javascript
- <button onclick="myFunction()">点击</button>
+<button onclick="myFunction()">点击</button>
 <p id="demo"></p>
 <body>
 <script>
@@ -450,7 +435,9 @@ John现在50岁
         document.getElementById("demo").innerHTML=x;
     }
 </script>
-
 ```
 
+```bash
 以上都不是输出为--期待周末
+```
+

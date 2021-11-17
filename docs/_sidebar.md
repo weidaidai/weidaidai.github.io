@@ -9,5 +9,5 @@
  * [http](/http)
 * [博客链接](/ssk)
 * [template模板编写渲染](/template模板)
-* [javascript ](/java)
-* [json](/json)
+* [javascript ](/javaScrip)
+* [json/yaml](/json)

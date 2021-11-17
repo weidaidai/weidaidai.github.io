@@ -746,11 +746,47 @@ QUEUED
 
 ### 持久化RDB
 
+rdb文件都是二进制文件，所以很小
+
+两种方法
+
+> save 同步，阻塞
+>
+> （命令会阻塞Redis服务器进程，服务器进程在RDB文件创建完成之前是不能处理任何的命令请求）
+
+> bgsave 异步，非阻塞----类似你去github 去fork别人的代码，后续主进程修改子进程不会改
+>
+> （`basave`命令会`fork`一个子进程，然后该子进程会负责创建RDB文件，而服务器进程会继续处理命令请求）
+
 ### 持久化AOF
+
+>
 
 ### redis订阅发布
 
+ 简单实现打开两个redis cli 
+
+```bash
+# subscribe+订阅频道名
+127.0.0.1:6379> subscribe firstchance
+Reading messages... (press Ctrl-C to quit)
+1) "subscribe"
+2) "firstchance"
+3) (integer) 1
+1) "message"
+2) "firstchance"
+3) "hello world" #收到消息
+
+#publish+订阅频道名+发布消息
+127.0.0.1:6379> publish firstchance "hello world" #发布消息
+(integer) 1
+```
+
+
+
 ### 哨兵
+
+
 
 ### 缓存雪崩
 
