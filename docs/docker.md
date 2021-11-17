@@ -2,7 +2,7 @@
 
 镜像（image），容器（container），仓库
 
-dockerfile
+> dockerfile
 
 
 
@@ -63,31 +63,49 @@ docker build .
 
 docker build . -t myimage
 
-查看镜像
+> 查看镜像
 
 docker image ls
 
-启动镜像
+> 查看所有镜像容器
+
+docker ps -a
+
+> 启动镜像
 
 docker run -d myimage
 
-查看容器
+> 查看容器
 
 docker container ls
 
-关闭容器
+> 关闭容器
 
 docker stop 容器id
 
-查看所有容器状态
+> 删除容器
 
-docker container ls -a
+docker rm 容器id
+
+> 查看所有容器状态
+
+ docker container ls -a
+
+> 执行镜像删除命令： 
 
 运行镜像并映射端口号
 
-docker run -d -p:8080:8080 myimage（镜像名）记得将本地的-p 端口号映射
+```bash
+docker run -d -p :8080:8080 myimage（镜像名）记得将本地的-p 端口号映射
 
 可以正常访问
+```
+
+hello  /
+
+#### 退出docker  
+
+exit或者ctrl+D（其他容器也一样）
 
 ## 部署多个 docker compose
 

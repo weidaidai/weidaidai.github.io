@@ -10,6 +10,8 @@
 
 ### 安装redis-docker
 
+> 普通拉取安装
+
 Step1:搜索redis：  `docker search redis`
 
 Step2:拉取官方镜像：docker pull docker.io/redis
@@ -18,8 +20,8 @@ Step3:下载完成后，使用`docker images`查看是否拉去成功
 
 Step4:运行容器
 
-```
-docker run -p 6379:6379 -v $PWD/data:/data -d redis:latest redis-server --appendonly yes
+```bash
+docker run -p 6379:6379 --name redis -v $PWD/data:/data -d redis:latest redis-server --appendonly yes
 ```
 
 如果需要给容器id命名
@@ -32,7 +34,7 @@ docker run -p 6379:6379 -v $PWD/data:/data -d redis:latest redis-server --append
 
 设置redis密码config set requirepass ****（****为你要设置的密码）
 
-若出现(error) NOAUTH Authentication required.错误，则使用 auth 密码 来认证密码
+若出现(error) NOAUTH Authentication required.错误，则使用 auth+ 密码 来认证密码
 
 命令说明：
  `docker run`：启动命令
@@ -44,7 +46,78 @@ docker run -p 6379:6379 -v $PWD/data:/data -d redis:latest redis-server --append
 
 latest最新
 
- `redis-server --appendonly yes` : 在容器执行redis-server启动命令，并打开redis持久化配置
+ `redis-server --appendonly yes` : 在容器执行redis-server启动命令，并打开redis持久化配置 （可选）
+
+
+
+> 已配置文件方式创建redis容器
+
+
+
+第一步 ：创建配置文件目录存放redis.conf，文件从[官网下载](http://download.redis.io/redis-stable/redis.conf)。
+
+②创建文件夹,新建配置文件贴入从官网下载的配置文件并修改
+
+mkdir /usr/local/docker
+
+vi /usr/local/docker/redis.conf
+
+  ③修改启动默认配置(从上至下依次)：
+
+bind 127.0.0.1 #注释掉这部分，这是限制redis只能本地访问
+
+protected-mode no #默认yes，开启保护模式，限制为本地访问
+
+daemonize no#默认yes，yes意为以守护进程方式启动，可后台运行，除非kill进程，改为yes会使配置文件方式启动redis失败
+
+databases 16 #数据库个数（可选），修改了这个只是查看是否生效。。
+
+dir  ./ #输入本地redis数据库存放文件夹（可选）
+
+appendonly yes #redis持久化（可选）
+
+```bash
+docker run -p 6379:6379 --name myredis --requirepass "Aa123456" -v /usr/local/docker/redis.conf:/etc/redis/redis.conf -v /usr/local/docker/data:/data -d redis redis-server /etc/redis/redis.conf --appendonly yes
+```
+
+命令解释说明：
+
+-p 6379:6379 端口映射：前表示主机部分，：后表示容器部分。
+
+--name myredis  指定该容器名称，查看和进行操作都比较方便。
+
+-v 挂载目录，规则与端口映射相同。
+
+为什么需要挂载目录：个人认为docker是个沙箱隔离级别的容器，这个是它的特点及安全机制，不能随便访问外部（主机）资源目录，所以需要这个挂载目录机制。
+
+-d redis 表示后台启动redis
+
+redis-server /etc/redis/redis.conf  以配置文件启动redis，加载容器内的conf文件，最终找到的是挂载的目录/usr/local/docker/redis.conf
+
+> alpine版本
+>
+> 博客 ：https://blog.csdn.net/u010234516/article/details/117816506
+
+
+
+bind 127.0.0.1 #注释掉这部分，这是限制redis只能本地访问
+
+docker pull redis:6.2.4-alpine
+
+关闭安全模式，改为需要密码
+
+requirepass +密码
+
+```
+docker run -v D:\work\data\docker-redis-volume\conf:/usr/local/etc/redis --name myredis -d -p 6379:6379 redis:6.2.4-alpine redis-server /usr/local/etc/redis/redis.conf
+
+```
+
+模拟一个镜像只执行redis-cli 命令
+
+```bash
+docker run -it --network container:id --rm redis:版本 redis-cli
+```
 
 
 
@@ -52,7 +125,15 @@ latest最新
 
 docker exec -it 容器名/id  redis-cli
 
+有密码则 auth +密码
+
+如果不需要密码则进入container
+
+ config requirepass '' ''
+
 redis有16个数据库，默认为0开始
+
+退出关闭shut down
 
 ### 基本命令
 
@@ -742,25 +823,43 @@ QUEUED
 
 ### 配置文件
 
-看不完 
+
+
+> 如果只是用于缓存可以不使用持久化
 
 ### 持久化RDB
 
-rdb文件都是二进制文件，所以很小
+[Redis在Docker中的数据持久化 - 知乎 (zhihu.com)](https://zhuanlan.zhihu.com/p/82159806)
 
-两种方法
+> `快照`RDB文件都是二进制文件，所以很小`文件名 dump.rdb`
 
 > save 同步，阻塞
 >
 > （命令会阻塞Redis服务器进程，服务器进程在RDB文件创建完成之前是不能处理任何的命令请求）
 
-> bgsave 异步，非阻塞----类似你去github 去fork别人的代码，后续主进程修改子进程不会改
->
-> （`basave`命令会`fork`一个子进程，然后该子进程会负责创建RDB文件，而服务器进程会继续处理命令请求）
+合适大数据保存
+
+可以自动保存，也可以手动save，在redis.conf中修改
 
 ### 持久化AOF
 
+> 保存的文件名 `appendonly.aof`，配置中默认no关闭 默认一秒钟保存(你输入的命令)
+
+>bgsave 异步，非阻塞----类似你去github 去fork别人的代码
 >
+>（`basave`命令会`fork`一个子进程，然后该子进程会负责创建RDB文件，而服务器进程会继续处理命令请求）
+>
+>如果配置文件有错误 ，需要修复输入
+>
+>`redis-check-aof--fix appendonly.aof`
+
+优点：
+
+1.每一次修改同步保持完整性
+
+2.每秒同步一次，可能如果出现问题可能会丢失一秒的数据
+
+3.aof 运行效率比rdb慢，修复速度比rdb慢
 
 ### redis订阅发布
 
@@ -774,21 +873,92 @@ Reading messages... (press Ctrl-C to quit)
 2) "firstchance"
 3) (integer) 1
 1) "message"
-2) "firstchance"
-3) "hello world" #收到消息
-
+2) "firstchance"#来自频道
+3) "hello world" #收到消息内容
+#发布消息
 #publish+订阅频道名+发布消息
 127.0.0.1:6379> publish firstchance "hello world" #发布消息
 (integer) 1
+#退订punsubscribe+频道
+```
+
+### 主从复制
+
+>主从复制，是指将—台Redis服务器的数据 ，复制到其他的Redis服务器。前者称为主节点(master/eader)，后者称为从节点
+>(slave/follower)；主数据的复制是单向的，只能由主节点到从节点。==Masterl以写为主，Slave 以读为主。
+
+> 一主二从
+
+> 默认情況下，每台Redis服务器都是主节点 ；且一个主节点可以有多个从节点(或没有从节点），但一个从节点只能有一个主节点。
+
+模拟环境可以配置多个redis容器
+
+如果是Linux环境就需要配置多个redis.conf
+
+> 端口配置对应修改
+
+dbfilename dump设置端口号.rdb
+
+port 设置端口号
+
+pidfile /var/run/redis_设置端口号.pid
+
+log.file "设置端口号"
+
+> 配置从机
+>
+> 主机能写，从机只能读，不能写，主机关，从机可以继续读
+
+```bash
+#slaveof ip+port
+slaveof 127.0.0.1 8080
+#查看角色
+#info replication
+#role :
+#connect_slaves:数量
+127.0.0.1:6379> info replication
+# Replication
+role:master
+connected_slaves:0
 ```
 
 
 
 ### 哨兵
 
+自动选中master模式
 
+主机有故障可自动切换
+
+![哨兵](images\哨兵.jpg)
+
+主（宕机）--->哨兵A、B、C检测主不可用--->随机一个哨兵发起投票、哨兵们投票---->故障转移--->发布订阅---->通知到redis服务器--->切换主机
+
+> 配置哨兵
+
+配置文件   `sentinel.conf`
+
+```bash
+#sentinel monitor 名称 +ip port（监控的master） 1
+sentinel monitor myredis 127.0.0.1 6379 1
+```
+
+2 启动哨兵
+
+```bash
+redis-sentinel 目录/sentinel.conf
+```
+
+如果有问题会发送+failover ，自动切换master
 
 ### 缓存雪崩
 
+如果在某一个时刻出现大规模的key失效，那么就会导致大量的请求打在了数据库上面，导致数据库压力巨大，如果在高并发的情况下，可能瞬间就会导致数据库宕机。这时候如果运维马上又重启数据库，马上又会有新的流量把数据库打死。这就是缓存雪崩。
 
+解决方法：
 
+① 均匀过期：设置不同的过期时间，让缓存失效的时间尽量均匀，避免相同的过期时间导致缓存雪崩，造成大量数据库的访问。
+
+② 分级缓存：第一级缓存失效的基础上，访问二级缓存，每一级缓存的失效时间都不同。
+
+③ 热点数据缓存永远不过期。
