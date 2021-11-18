@@ -122,7 +122,7 @@ auto_increment 自增长
 
 **2.ctrl+shift+r 只运行选中的sql语句**
 
-**3.ctrl+/ 注释sql语句**
+**3.ct m rl+/ 注释sql语句**
 
 **4.ctrl+shift +/ 解除注释**
 
@@ -148,7 +148,9 @@ auto_increment 自增长
 
 ```sql
 alter table tb_test2 add use_phone varchar(20) not null comment'添加';
-alter table tb_test2 modify use_phone int not null comment'修改表名';
+-- 修改类型和约束条件
+alter table tb_test2 modify use_phone int not null comment'修改类型';
+-- 修改列名
 alter table tb_test2 change use_phone change_use2 int not null comment'修改列名';
 ```
 

@@ -7,7 +7,7 @@
 * [MongoDB](/mongodb)
 * [redis事务处理](/gin/gin框架)
  * [http](/http)
-* [博客链接](/ssk)
+
 * [template模板编写渲染](/template模板)
 * [javascript ](/javaScrip)
 * [json/yaml](/json)
