@@ -1,13 +1,11 @@
 <!-- docs/_sidebar.md -->
-
-* [golang基础知识](/)
+* [golang基础知识](/README)
 * [Docker](/docker)
 * [sql](/guide)
 * [redis](/redis)
 * [MongoDB](/mongodb)
 * [redis事务处理](/gin/gin框架)
- * [http](/http)
-
+* [http](/http)
 * [template模板编写渲染](/template模板)
 * [javascript ](/javaScrip)
 * [json/yaml](/json)
