@@ -943,7 +943,7 @@ connected_slaves:0
 sentinel monitor myredis 127.0.0.1 6379 1
 ```
 
-2 启动哨兵
+> 启动哨兵
 
 ```bash
 redis-sentinel 目录/sentinel.conf
@@ -951,7 +951,7 @@ redis-sentinel 目录/sentinel.conf
 
 如果有问题会发送+failover ，自动切换master
 
-### 缓存击
+### 缓存问题
 
 #### 缓存雪崩
 

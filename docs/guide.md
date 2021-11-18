@@ -1,6 +1,7 @@
 ## sql语句的在mysql基本操作
 
-## 创建数据库和判断
+>创建数据库和判断
+
 数据库中column和field的区别
 Field: smallest unit of application data recognized by system software指数据字段，数据记录中已有定义的部分，例如数据库表中的一列，但一般特指某列某行（数据库里的特定一格）当我说field的时候，不仅要说特定格里的值还要说column name a column is a set of data values of a particular simple type, one value for each row of the database.指列，一列所有数据
 
@@ -47,7 +48,57 @@ user_decribe text
 )ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4;##支持中文
 ```
 
-tinyint 一个字节
+> MYSQL支持所有SQL数据类型
+
+| 类型         | 大小                                     | 范围（无符号）                                               | 范围（有符号）                                               | 用途            |
+| :----------- | :--------------------------------------- | :----------------------------------------------------------- | :----------------------------------------------------------- | :-------------- |
+| TINYINT      | 1 Bytes                                  | (0，255)                                                     | (-128，127)                                                  | 小整数值        |
+| SMALLINT     | 2 Bytes                                  | (0，65 535)                                                  | (-32 768，32 767)                                            | 大整数值        |
+| MEDIUMINT    | 3 Bytes                                  | (0，16 777 215)                                              | (-8 388 608，8 388 607)                                      | 大整数值        |
+| INT或INTEGER | 4 Bytes                                  | (0，4 294 967 295)                                           | (-2 147 483 648，2 147 483 647)                              | 大整数值        |
+| BIGINT       | 8 Bytes                                  | (0，18 446 744 073 709 551 615)                              | (-9,223,372,036,854,775,808，9 223 372 036 854 775 807)      | 极大整数值      |
+| FLOAT        | 4 Bytes                                  | 0，(1.175 494 351 E-38，3.402 823 466 E+38)                  | (-3.402 823 466 E+38，-1.175 494 351 E-38)，0，(1.175 494 351 E-38，3.402 823 466 351 E+38) | 单精度 浮点数值 |
+| DOUBLE       | 8 Bytes                                  | 0，(2.225 073 858 507 201 4 E-308，1.797 693 134 862 315 7 E+308) | (-1.797 693 134 862 315 7 E+308，-2.225 073 858 507 201 4 E-308)，0，(2.225 073 858 507 201 4 E-308，1.797 693 134 862 315 7 E+308) | 双精度 浮点数值 |
+| DECIMAL      | 对DECIMAL(M,D) ，如果M>D，为M+2否则为D+2 | 依赖于M和D的值                                               | 依赖于M和D的值                                               | 小数值          |
+
+------
+
+## 日期和时间类型
+
+表示时间值的日期和时间类型为DATETIME、DATE、TIMESTAMP、TIME和YEAR。
+
+每个时间类型有一个有效值范围和一个"零"值，当指定不合法的MySQL不能表示的值时使用"零"值。
+
+TIMESTAMP类型有专有的自动更新特性，将在后面描述。
+
+| 类型      | 大小 ( bytes) | 范围                                                         | 格式                | 用途                     |
+| :-------- | :------------ | :----------------------------------------------------------- | :------------------ | :----------------------- |
+| DATE      | 3             | 1000-01-01/9999-12-31                                        | YYYY-MM-DD          | 日期值                   |
+| TIME      | 3             | '-838:59:59'/'838:59:59'                                     | HH:MM:SS            | 时间值或持续时间         |
+| YEAR      | 1             | 1901/2155                                                    | YYYY                | 年份值                   |
+| DATETIME  | 8             | 1000-01-01 00:00:00/9999-12-31 23:59:59                      | YYYY-MM-DD HH:MM:SS | 混合日期和时间值         |
+| TIMESTAMP | 4             | 1970-01-01 00:00:00/2038结束时间是第 **2147483647** 秒，北京时间 **2038-1-19 11:14:07**，格林尼治时间 2038年1月19日 凌晨 03:14:07 | YYYYMMDD HHMMSS     | 混合日期和时间值，时间戳 |
+
+------
+
+## 字符串类型
+
+字符串类型指CHAR、VARCHAR、BINARY、VARBINARY、BLOB、TEXT、ENUM和SET。该节描述了这些类型如何工作以及如何在查询中使用这些类型。
+
+| 类型       | 大小                  | 用途                            |
+| :--------- | :-------------------- | :------------------------------ |
+| CHAR       | 0-255 bytes           | 定长字符串                      |
+| VARCHAR    | 0-65535 bytes         | 变长字符串                      |
+| TINYBLOB   | 0-255 bytes           | 不超过 255 个字符的二进制字符串 |
+| TINYTEXT   | 0-255 bytes           | 短文本字符串                    |
+| BLOB       | 0-65 535 bytes        | 二进制形式的长文本数据          |
+| TEXT       | 0-65 535 bytes        | 长文本数据                      |
+| MEDIUMBLOB | 0-16 777 215 bytes    | 二进制形式的中等长度文本数据    |
+| MEDIUMTEXT | 0-16 777 215 bytes    | 中等长度文本数据                |
+| LONGBLOB   | 0-4 294 967 295 bytes | 二进制形式的极大文本数据        |
+| LONGTEXT   | 0-4 294 967 295 bytes | 极大文本数据                    |
+
+tinyint 一个字节 TINYINT
 
 default 默认为8888
 
@@ -65,7 +116,31 @@ int不能后面设置其他数据类型只能填充int类型
 
 auto_increment 自增长
 
+>Navicat Premium常用快捷键
 
+1.ctrl+r 运行当前查询窗口的所有sql语句
+
+**2.ctrl+shift+r 只运行选中的sql语句**
+
+**3.ctrl+/ 注释sql语句**
+
+**4.ctrl+shift +/ 解除注释**
+
+5.ctrl+q 打开查询窗口
+
+6.ctrl+n 打开一个新的查询窗口
+
+7.ctrl+w 关闭当前查询窗口
+
+8.ctrl+l 删除一行
+
+9.Shift+Home 鼠标在当前一行末尾，按快捷选中当前一行
+
+10. F6: 打开一个mysql命令行窗口
+
+11. ctrl + l: 删除一行
+
+12. F7: 运行从光标当前位置开始的一条完整sql语句
 
 ## alter和DROP
 
@@ -271,7 +346,7 @@ select use_gener as 性别,avg(use_height)平均,SUM(use_height)总身高 from u
 
 ## limt
 
-sql 中叫 top
+> sql 中叫 top
 
 ```sql
 SELECT * FROM user_info LIMIT 1,3;
@@ -391,3 +466,31 @@ DROP INDEX [indexName] ON 表名;
 ```
 ALTER table 表名 ADD INDEX indexName(表列名)
 ```
+
+## 事务处理
+
+参考：https://www.runoob.com/mysql/mysql-transaction.html
+
+*在 MySQL 命令行的默认设置下，事务都是自动提交的，即执行 SQL 语句后就会马上执行 COMMIT 操作。因此要显式地开启一个事务务须使用命令 BEGIN 或 START TRANSACTION，或者执行命令 SET AUTOCOMMIT=0，用来禁止使用当前会话的自动提交。*
+
+一般来说，事务是必须满足4个条件（ACID）：：原子性（**A**tomicity，或称不可分割性）、一致性（**C**onsistency）、隔离性（**I**solation，又称独立性）、持久性（**D**urability）。
+
+- **原子性：**一个事务（transaction）中的所有操作，要么全部完成，要么全部不完成，不会结束在中间某个环节。事务在执行过程中发生错误，会被回滚（Rollback）到事务开始前的状态，就像这个事务从来没有执行过一样。
+- **一致性：**在事务开始之前和事务结束以后，数据库的完整性没有被破坏。这表示写入的资料必须完全符合所有的预设规则，这包含资料的精确度、串联性以及后续数据库可以自发性地完成预定的工作。
+- **隔离性：**数据库允许多个并发事务同时对其数据进行读写和修改的能力，隔离性可以防止多个事务并发执行时由于交叉执行而导致数据的不一致。事务隔离分为不同级别，包括读未提交（Read uncommitted）、读提交（read committed）、可重复读（repeatable read）和串行化（Serializable）。
+- **持久性：**事务处理结束后，对数据的修改就是永久的，即便系统故障也不会丢失。
+
+MYSQL 事务处理主要有两种方法：
+
+> 1、用 BEGIN, ROLLBACK, COMMIT来实现
+
+- **BEGIN** 开始一个事务
+- **ROLLBACK** 事务回滚(rollback 回到原来的状态)
+- **COMMIT** 事务确认 （提交）
+
+> 2、直接用 SET 来改变 MySQL 的自动提交模式:
+
+- **SET AUTOCOMMIT=0** 禁止自动提交
+- **SET AUTOCOMMIT=1** 开启自动提交
+
+事务测试
