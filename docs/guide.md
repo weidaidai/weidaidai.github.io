@@ -2,10 +2,16 @@
 
 >创建数据库和判断
 
-数据库中column和field的区别
-Field: smallest unit of application data recognized by system software指数据字段，数据记录中已有定义的部分，例如数据库表中的一列，但一般特指某列某行（数据库里的特定一格）当我说field的时候，不仅要说特定格里的值还要说column name a column is a set of data values of a particular simple type, one value for each row of the database.指列，一列所有数据
+数据库中`column`和`field`的区别
+Field: smallest unit of application data recognized by system software指数据字段，数据记录中`已有定义的部分`，例如数据库表中的一列，但一般特指`某列某行`（数据库里的`特定一格`）
 
-drop database if exists testdb;//不存在就创建
+column 指列，`一列所有数据`
+
+column name a column is a set of data values of a particular simple type, one value for each row of the database.
+
+
+
+`drop database if exists testdb`;//不存在就创建
 
 create database testdb;
 -- 使用数据库
@@ -48,6 +54,26 @@ user_decribe text
 )ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4;##支持中文
 ```
 
+tinyint` 一个字节 ,小整数
+
+`default` 默认为8888,初始密码
+
+`integer `int长度限制为10
+
+`varchar`(20)可字符串最大长度为255,现在设置为20
+
+`char`定长字符串最大255字节没有给定长度用空格补充
+
+单精度`decimal`(4,1) 表示4位数小数保留2 位-最大（6，3）
+
+`int`不能后面设置其他数据类型只能填充int类型
+
+`auto_increment` 自增长
+
+### 外键
+
+### mysql支持的数据类型
+
 > MYSQL支持所有SQL数据类型
 
 | 类型         | 大小                                     | 范围（无符号）                                               | 范围（有符号）                                               | 用途            |
@@ -63,7 +89,7 @@ user_decribe text
 
 ------
 
-## 日期和时间类型
+> 日期和时间类型
 
 表示时间值的日期和时间类型为DATETIME、DATE、TIMESTAMP、TIME和YEAR。
 
@@ -81,7 +107,7 @@ TIMESTAMP类型有专有的自动更新特性，将在后面描述。
 
 ------
 
-## 字符串类型
+> 字符串类型
 
 字符串类型指CHAR、VARCHAR、BINARY、VARBINARY、BLOB、TEXT、ENUM和SET。该节描述了这些类型如何工作以及如何在查询中使用这些类型。
 
@@ -98,25 +124,54 @@ TIMESTAMP类型有专有的自动更新特性，将在后面描述。
 | LONGBLOB   | 0-4 294 967 295 bytes | 二进制形式的极大文本数据        |
 | LONGTEXT   | 0-4 294 967 295 bytes | 极大文本数据                    |
 
-tinyint 一个字节 TINYINT
+> 外键foreign key 和外键references
 
-default 默认为8888
+假设两张表,
+表1(学号,姓名,性别),学号为主键.
+表2(学号,课程,成绩).
+可以为表2的学号定义外键(FOREIGN KEY),该外键的取值范围参照(REFERENCES)表1的学号
 
-integer int长度限制为10
+比如我们创两个表
 
-date 日历
+```sql
+-- 分类表
+CREATE TABLE category ( cid VARCHAR ( 32 ) PRIMARY KEY, cname VARCHAR ( 50 ) );
 
-varchar(20)可字符串最大长度为255
+-- 商品表
+CREATE TABLE products (
+	pid VARCHAR ( 32 ) PRIMARY KEY,
+	pname VARCHAR ( 50 ),
+	price INT,
+	flag VARCHAR ( 2 ),-- 是否上架标记为：1表示上架、0表示下架
+	category_id VARCHAR ( 32 ),
+	FOREIGN KEY ( category_id ) REFERENCES category ( cid ) --外键的取值范围参照
+);
 
-char定长字符串最大255字节没有给定长度用空格补充
+-- 分类数据
+INSERT INTO category(cid,cname) VALUES('c001','家电');
+INSERT INTO category(cid,cname) VALUES('c002','鞋服');
+INSERT INTO category(cid,cname) VALUES('c003','化妆品');
+INSERT INTO category(cid,cname) VALUES('c004','汽车');
 
-单精度decimal(4,1) 表示4位数小数保留2 位-最大（6，3）
+-- 商品数据
+INSERT INTO products(pid, pname,price,flag,category_id) VALUES('p001','小米电视机',5000,'1','c001');
+INSERT INTO products(pid, pname,price,flag,category_id) VALUES('p002','格力空调',3000,'1','c001');
+INSERT INTO products(pid, pname,price,flag,category_id) VALUES('p003','美的冰箱',4500,'1','c001');
+INSERT INTO products (pid, pname,price,flag,category_id) VALUES('p004','篮球鞋',800,'1','c002');
+INSERT INTO products (pid, pname,price,flag,category_id) VALUES('p005','运动裤',200,'1','c002');
+INSERT INTO products (pid, pname,price,flag,category_id) VALUES('p006','T恤',300,'1','c002');
+INSERT INTO products (pid, pname,price,flag,category_id) VALUES('p007','冲锋衣',2000,'1','c002');
+INSERT INTO products (pid, pname,price,flag,category_id) VALUES('p008','神仙水',800,'1','c003');
+INSERT INTO products (pid, pname,price,flag,category_id) VALUES('p009','大宝',200,'1','c003');
 
-int不能后面设置其他数据类型只能填充int类型
+--查询
+SELECT *FROM products;
 
-auto_increment 自增长
+```
 
->Navicat Premium常用快捷键
+![外键](images\外键.png)
+
+> Navicat Premium常用快捷键
 
 1.ctrl+r 运行当前查询窗口的所有sql语句
 
@@ -216,6 +271,7 @@ NOT NULL 约束强制字段始终包含值。这意味着，如果不向字段�
 ```sql
 update user_info set use_birthday="2021-04-06" where use_id=1; 
 update(表名)set修改字段=值，。。。where（主键不变值或者其他）
+-- 在条件的一般用id作为主键来标识位，有些主键不是int类型有可能是varchar这时候要注意加引号
 ```
 
 ## where筛选查询和全部查询

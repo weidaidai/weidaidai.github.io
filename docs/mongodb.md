@@ -55,7 +55,7 @@ runoob  0.000GB
 
 > 插入数据 db.数据库名.insert({"key":"val"}) 
 
-```bash
+```json
 db.runoob.insert({"name":"小可爱"})
 ```
 
@@ -63,5 +63,18 @@ db.runoob.insert({"name":"小可爱"})
 
 ```bash
 db.dropDatabase()
+```
+
+> 数据库集合
+
+```bash
+#删除集合db+数据库.drop()
+#创建集合db.createCollection("")
+#查看集合show collections
+use runoob
+db.createCollection('runoob')
+show collections
+db.runoob.drop()
+show tables
 ```
 
