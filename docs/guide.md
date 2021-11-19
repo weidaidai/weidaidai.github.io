@@ -255,7 +255,7 @@ alter table tb_test2 rename to user_info;
 alter table user_info engine=myisam;##默认为InnoDB
 ```
 
-insert into 
+## insert into 
 
 > insert into +(column1,column2...)+ values+(values1,values2...)插入表数据
 >
@@ -443,7 +443,18 @@ IN 操作符允许我们在 WHERE 子句中规定多个值。
 
 ```sql
 SELECT *FROM 表名 WHERE 列名 IN (value1,value2,...)
+SELECT *FROM user_info WHERE use_id IN (1,2);
 ```
+
+![](images\MYSQL_IN.PNG)
+
+怎么感觉和limt差不多
+
+```sql
+SELECT *FROM user_info WHERE use_id=1 OR use_id=2; //结果一样
+```
+
+
 
 ## 多表查询
 
@@ -459,7 +470,7 @@ SELECT COUNT(*) FROM 表名;
 
 有时为了得到完整的结果，我们需要从两个或更多的表中获取结果。我们就需要执行 join。
 
-MySQL的INNER JOIN(也可以省略 INNER 使用 JOIN，效果一样)来连接以上两张表来读取runoob_tbl表中所有runoob_author字段在tcount_tbl表对应的runoob_count字段值
+MySQL的INNER JOIN(也可以省略 INNER 使用 JOIN，效果一样)来连接以上两张表来读取runoob_tbl表中所有runoob_author字段在tcount_tbl表对应的runoob_count字段值,相同部分
 
 ```
 SELECT  A.column1,b.column2 FROM TABLE_NAME1 A JOIN TABLE_NAME2 B ON A.column1=b.column2
@@ -474,9 +485,24 @@ SELECT  A.column1,b.column2 FROM TABLE_NAME1 A JOIN TABLE_NAME2 B ON A.column1=b
 
 ![](images\JOIN.PNG)
 
-**LEFT JOIN（左连接）：**获取左表所有记录，即使右表没有对应匹配的记录。
+> join查看交集元素 比如现在查看手机
 
-以 **runoob_tbl** 为左表，**tcount_tbl** 为右表
+```sql
+SELECT b.SId 学生id,student_phone 手机 FROM user_info A JOIN Student B ON B.student_phone=A.change_use2; 
+```
+
+| 苹果<br/>改变值<br/>小米<br/>魅族<br/>vivo<br/>小米     change_use2内容 |
+| ------------------------------------------------------------ |
+| 三星<br/>小米<br/>华为         student_phone内容             |
+| `SELECT b.SId 学生id,student_phone 手机 FROM user_info A JOIN Student B ON B.student_phone=A.change_use2;` |
+
+查询结果
+
+![](images\join3.PNG)
+
+**LEFT JOIN（左连接）：**获取左表a表所有记录，即使右b表没有对应匹配的记录。
+
+以 **runoob_tbl** 为a表，**tcount_tbl** 为b表
 
 runoob_tb1表
 
