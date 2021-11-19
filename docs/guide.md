@@ -70,7 +70,7 @@ tinyint` 一个字节 ,小整数
 
 `auto_increment` 自增长
 
-### 外键
+### 
 
 ### mysql支持的数据类型
 
@@ -123,6 +123,8 @@ TIMESTAMP类型有专有的自动更新特性，将在后面描述。
 | MEDIUMTEXT | 0-16 777 215 bytes    | 中等长度文本数据                |
 | LONGBLOB   | 0-4 294 967 295 bytes | 二进制形式的极大文本数据        |
 | LONGTEXT   | 0-4 294 967 295 bytes | 极大文本数据                    |
+
+### 外键
 
 > 外键foreign key 和外键references
 
@@ -253,11 +255,15 @@ alter table tb_test2 rename to user_info;
 alter table user_info engine=myisam;##默认为InnoDB
 ```
 
-## insert into 插入表数据
+insert into 
+
+> insert into +(column1,column2...)+ values+(values1,values2...)插入表数据
+>
+> insert into 表名（字段名称，。。。）values（插入的值）
 
 ```sql
 insert into user_info(use_name,use_birthday,use_gener,use_state,use_height,user_decribe)values("dada","2022-07-08","2",1.78,4,"golang")
-insert into 表名（字段名称，。。。）values（插入的值）
+
 ```
 
 插入类型要匹配
@@ -266,12 +272,14 @@ insert into 表名（字段名称，。。。）values（插入的值）
 
 NOT NULL 约束强制字段始终包含值。这意味着，如果不向字段添加值，就无法插入新记录或者更新记录。
 
-## update set字段修改
+## update table_name +set 
+
+> update +table_name +set +field  where primary key();
 
 ```sql
 update user_info set use_birthday="2021-04-06" where use_id=1; 
 update(表名)set修改字段=值，。。。where（主键不变值或者其他）
--- 在条件的一般用id作为主键来标识位，有些主键不是int类型有可能是varchar这时候要注意加引号
+-- 一般用id作为主键来标识位，有些主键不是int类型有可能是varchar这时候要注意加引号
 ```
 
 ## where筛选查询和全部查询
@@ -302,9 +310,9 @@ delete from user_info where use_id=2;
 ## 通配符%模糊查找
 
 ```sql
-select *from 表名  where 位置 like %（%表示通配符）
+select *from TABLE_NAME  where column like %（%表示通配符）
 -- 有'%xx%'无论是否在一起
--- 有'xx%'Z在首个位置
+-- 有'xx%'在首个位置
 select *from 表名  where 位置 like %xx%（%表示通配符）
 select *from user_info where use_name like "ke%";
 
@@ -370,7 +378,7 @@ SELECT use_gener as 性别,AVG(Use_height)用户总身高 from user_info group b
 如果想让其他分组有显示需要在group by 后面添加需要的
 
 ```sql
-SELECT use_state,use_gener as 性别,AVG(Use_height)用户总身高 from user_info group by use_state,use_gener;
+SELECT use_state 状态,use_gener 性别,AVG(Use_height)用户总身高 from user_info group by use_state,use_gener;
 ```
 
 ![test8](images\test8.png)
@@ -397,7 +405,8 @@ SELECT *FROM user_info WHERE use_id>2 order by use_id ASC;
 配合使用order by 一般放GROUP BY后面
 
 ```sql
-select use_gener as 性别,avg(use_height)平均,SUM(use_height)总身高 from user_info GROUP BY use_gener ORDER BY 总身高 ASC;
+select use_gener 性别,avg(use_height)平均,SUM(use_height)总身高 from user_info GROUP BY use_gener ORDER BY 总身高 ASC;
+-- 注意：对于ORDER BY +COMMENT 一定要对应前面对应的 COMMENT 
 ```
 
 ![test10](images\test10.png)
@@ -450,22 +459,20 @@ SELECT COUNT(*) FROM 表名;
 
 有时为了得到完整的结果，我们需要从两个或更多的表中获取结果。我们就需要执行 join。
 
+MySQL的INNER JOIN(也可以省略 INNER 使用 JOIN，效果一样)来连接以上两张表来读取runoob_tbl表中所有runoob_author字段在tcount_tbl表对应的runoob_count字段值
+
 ```
-FROM 表名1 INNER JOIN 表名2 ON 表名.主键 = Orders.主键
-ORDER BY Persons.LastName
+SELECT  A.column1,b.column2 FROM TABLE_NAME1 A JOIN TABLE_NAME2 B ON A.column1=b.column2
 ```
 
 ```sql
 --创建两个表
-连接查询
- SELECT a.use_gener, b.use_state FROM user_info a INNER JOIN score b ON a.use_id = b.use_id;
+--连接查询
+--接下来我们就使用MySQL的INNER JOIN(也可以省略 INNER 使用 JOIN，效果一样)来连接以上两张表来读取runoob_tbl表中所有runoob_author字段在tcount_tbl表对应的runoob_count字段值：
+ SELECT a.runoob_id , a.runoob_author, b.runoob_count FROM runoob_tbl a INNER JOIN tcount_tbl b ON a.runoob_author = b.runoob_author;
 ```
 
-![score](images\score.png)<img src="D:\workspace\weidaidai.github.io\docs\images\use_info.png" alt="use_info" />
-
-查询如下
-
-![test11](images\test11.png)
+![](images\JOIN.PNG)
 
 **LEFT JOIN（左连接）：**获取左表所有记录，即使右表没有对应匹配的记录。
 
@@ -499,7 +506,19 @@ SELECT a.runoob_id, a.runoob_author, b.runoob_count FROM runoob_tbl a RIGHT JOIN
 
 索引分单列索引和组合索引。单列索引，即一个索引只包含单个列，一个表可以有多个单列索引，但这不是组合索引。组合索引，即一个索引包含多个列。
 
-创建索引时，你需要确保该索引是应用在 SQL 查询语句的条件(一般作为 WHERE 子句的条件)。
+创建索引时，你需要确保该索引是应用在 SQL 查询语句的条件(一般作为 WHERE 子句的条件) primary key
+
+或者unique也可以达到不重复的效果
+
+```sql
+CREATE TABLE person_tbl
+(
+   first_name CHAR(20) NOT NULL,
+   last_name CHAR(20) NOT NULL,
+   sex CHAR(10),
+   UNIQUE (last_name, first_name)
+);-- 向last_name ,first_name INSERT INTO 同样的 values 会报错
+```
 
 ## 普通索引
 
@@ -524,6 +543,8 @@ DROP INDEX [indexName] ON 表名;
 ```
 ALTER table 表名 ADD INDEX indexName(表列名)
 ```
+
+
 
 ## 事务处理
 

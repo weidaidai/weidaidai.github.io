@@ -35,7 +35,7 @@ db.createUser({`
 `});　
 ```
 
-创建数据库
+### 增删改查
 
 > use+创建数据库名，有使用，无自动创
 
@@ -78,3 +78,4 @@ db.runoob.drop()
 show tables
 ```
 
+> 创建集合
