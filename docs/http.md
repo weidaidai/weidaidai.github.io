@@ -2,6 +2,16 @@
 
 超文本传输协议（Hyper Text Transfer Protocol，HTTP）是一个简单的请求-响应协议，它通常运行在TCP之上。 它指定了客户端可能发送给服务器什么样的消息以及得到什么样的响应。 请求和响应消息的头以ASCII形式给出；而消息内容则具有一个类似MIME的格式
 
+### HTTP 工作原理
+
+HTTP协议工作于客户端-服务端架构上。浏览器作为HTTP客户端通过URL向HTTP服务端即WEB服务器发送所有请求。
+
+Web服务器有：Apache服务器，IIS服务器（Internet Information Services）等。
+
+Web服务器根据接收到的请求后，向客户端发送响应信息。
+
+HTTP默认端口号为80，但是你也可以改为8080或者其他端口。
+
 ### HTTP消息体结构    
 
 参考https://zhuanlan.zhihu.com/p/137679911
@@ -56,6 +66,54 @@ http协议，状态码200 ok
 
 。。。
 
+完整
+
+用get 请求 www.google.com.hk
+
+请求头部
+
+```yaml
+:authority: www.google.com.hk    # 请求的域名（对方的服务器地址）
+:method: GET                     # 请求方法，一般浏览器访问网站使用GET请求                     
+:path: /?gws_rd=ssl              # 请求路径，也就是 https://ww.google.com.hk/ 后面的内容
+:scheme: https                   # 请求的协议，这里使用https协议（使用SSL加密的http协议）
+accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng响应头,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9
+# 请求文件类型，可以吧这里的文件类型Google一下，因为篇幅太长这里就不做详细介绍了（如text/html是文档/HTML文档的意思）
+accept-encoding: gzip, deflate, br  # 压缩类型，支援gzip,deflate,br 压缩方式
+accept-language: zh-HK,zh;q=0.9  # 浏览器语言，我的默认语言是 zh-hk （中国-香港）
+cache-control: no-cache          # 缓存讯息，这里是 不缓存（no-cache）
+pragma: no-cache                 # 缓存来源
+sec-fetch-dest: document         # sec-fetch-* 意为如何使用返回的参数
+sec-fetch-mode: navigate
+sec-fetch-site: same-origin
+sec-fetch-user: ?1
+upgrade-insecure-requests: 1     # 不用在意这个东西
+user-agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/86.0.4240.183 Safari/537.36 Edg/86.0.622.63
+# 非常重要的浏览器UA，表明了浏览器的身份：是什么内核，运行在什么
+```
+
+响应头部
+
+```yaml
+alt-svc: h3-Q050=":443"; ma=2592000,h3-29=":443"; ma=2592000,h3-T051=":443"; ma=2592000,h3-T050=":443"; ma=2592000,h3-Q046=":443"; ma=2592000,h3-Q043=":443"; ma=2592000,quic=":443"; ma=2592000; v="46,43"
+# 标示这个请求使用http/3 （google已经用上h3了啊）
+cache-control: private, max-age=0  # 缓存控制：私有（缓存0秒，也就是不缓存）
+content-encoding: gzip  # 压缩使用Gzip压缩
+content-length: 67582   #  HTTP消息长度 67582
+content-type: text/html; charset=UTF-8  # 返回文件类型 text/html ，字符编码为 UTF-8
+date: Tue, 10 Nov 2020 01:06:54 GMT   # 服务器的时间
+expires: -1  # 链接过期，-1不过期
+p3p: CP="This is not a P3P policy! See g.co/p3phelp for more info."  #个人隐私安全平台项目，可以去wiki查询一下p3p
+server: gws  # 服务器名，这个其实可以自定义，一般用于标示自己用的是什么web服务器
+set-cookie: 1P_JAR=2020-11-10-01; expires=Thu, 10-Dec-2020 01:06:54 GMT; path=/; domain=.google.com.hk; Secure; SameSite=none
+set-cookie: NID=204=Zl-c80ku7NgAF7VKJt84n2Z4DGob3kh9RCnBCaf21NgeIKVA7GsixU8st4FdJvPODEnS_EYoXKbPOrdhxKI_Si4k2PeLInLNoE5KNlBC1DKyZHP1z0GLesmx8sN-H4hFUe3cvrUDJMyUTq6rTyG8DL4X-rRLcgn1Iy32UlaxFDo; expires=Wed, 12-May-2021 01:06:54 GMT; path=/; domain=.google.com.hk; Secure; HttpOnly; SameSite=none
+# set-cookie 是给予cookie
+status: 200  # 状态码，非必要
+strict-transport-security: max-age=31536000
+x-frame-options: SAMEORIGIN
+x-xss-protection: 0
+```
+
 ### HTTP 请求头字段
 
 这里介绍一些常用的HTTP 请求头字段：
@@ -85,8 +143,8 @@ http协议，状态码200 ok
 > `Server`：服务器名字。
 > `Set-Cookie`：设置和页面关联的Cookie。
 > `Date`：表示消息发送时间。
->
-> ### websocker与http
+
+### websocket与http 区别
 
 <img src="images\http(1).png" alt="http(1)" style="zoom: 67%;" />
 
