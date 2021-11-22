@@ -14,7 +14,7 @@
 
 Step1:搜索redis：  `docker search redis`
 
-Step2:拉取官方镜像：docker pull docker.io/redis
+Step2:拉取官方镜像：docker pull redis
 
 Step3:下载完成后，使用`docker images`查看是否拉去成功
 
@@ -180,8 +180,17 @@ OK
 (integer) 0
 127.0.0.1:6379[2]> get name
 "1"
-#加 incrby+key+val
-#减 decrby+key+val
+#加 incrby+key+val（指定数值）incr +key 自增1
+#减 decrby+key+val（指定数值）decr +key 自减1
+
+127.0.0.1:6379> incr key1 
+(integer) 12
+127.0.0.1:6379> decr key1
+(integer) 11
+127.0.0.1:6379> incrby key1 12
+(integer) 23
+127.0.0.1:6379> decrby key1 12
+(integer) 11
 ```
 
 ### list（列表）
@@ -530,11 +539,11 @@ Redis 的 Set 是 string 类型的无序集合，元素不可重复。
 1) "d"
 2) "a"
 3) "e"
-#查看差集sdiff(为什么没有e ?)
+#查看差集sdiff(为什么没有e ?)因为只是返回第一个集合与其他集合不同的地方
 127.0.0.1:6379> sdiff key1 key2
 1) "b"
 2) "c"
-#查看交集sinter 共同好友
+#查看交集sinter 共同好友因为只是返回第一个集合与其他集合相同的地方
 127.0.0.1:6379> sinter key1 key2
 1) "d"
 2) "a"
