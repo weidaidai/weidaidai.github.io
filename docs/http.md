@@ -70,7 +70,7 @@ http协议，状态码200 ok
 
 用get 请求 www.google.com.hk
 
-请求头部
+> 请求头部
 
 ```yaml
 :authority: www.google.com.hk    # 请求的域名（对方的服务器地址）
@@ -92,7 +92,7 @@ user-agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML,
 # 非常重要的浏览器UA，表明了浏览器的身份：是什么内核，运行在什么
 ```
 
-响应头部
+> 响应头部
 
 ```yaml
 alt-svc: h3-Q050=":443"; ma=2592000,h3-29=":443"; ma=2592000,h3-T051=":443"; ma=2592000,h3-T050=":443"; ma=2592000,h3-Q046=":443"; ma=2592000,h3-Q043=":443"; ma=2592000,quic=":443"; ma=2592000; v="46,43"
@@ -118,31 +118,31 @@ x-xss-protection: 0
 
 这里介绍一些常用的HTTP 请求头字段：
 
-> `Host`：客户端端请求的域名。
-> `Connection`：告诉服务端，处理完本请求后，是否关闭连接。
-> `User-Agent`：客户端使用的浏览器或APP 类型/版本。
-> `Accept`：客户端支持哪些类型的文档。
-> `Accept-Encoding` ：客户端支持的编码类型。
-> `Accept-Language` ：客户端支持的语言类型。
-> `Referer` ：客户端从哪个网页过来的。
-> `Cache-Control`：指定缓存机制。
+`Host`：客户端端请求的域名。
+`Connection`：告诉服务端，处理完本请求后，是否关闭连接。
+`User-Agent`：客户端使用的浏览器或APP 类型/版本。
+`Accept`：客户端支持哪些类型的文档。
+`Accept-Encoding` ：客户端支持的编码类型。
+`Accept-Language` ：客户端支持的语言类型。
+`Referer` ：客户端从哪个网页过来的。
+`Cache-Control`：指定缓存机制。
 
 ### HTTP 响应头字段
 
 这里介绍一些常用的HTTP 响应头字段：
 
-> `Allow`：表明服务器支持哪些请求方法，如GET，POST 等。
-> `Content-Encoding`：响应内容编码方法。
-> `Content-Type`：响应内容属于什么MIME 类型。
-> `Content-Length`：响应内容的长度。
-> `Date`：当前GMT 时间。
-> `Expiress`：响应内容过期时间，过期后将不再缓存内容。
-> `Last-Modified`：文档的最后改动时间。
-> `Location`：告诉客户端到哪里获取文档，一般用于重定向。
-> `Refresh`：浏览器在多少秒后刷新文档。
-> `Server`：服务器名字。
-> `Set-Cookie`：设置和页面关联的Cookie。
-> `Date`：表示消息发送时间。
+`Allow`：表明服务器支持哪些请求方法，如GET，POST 等。
+`Content-Encoding`：响应内容编码方法。
+`Content-Type`：响应内容属于什么MIME 类型。
+`Content-Length`：响应内容的长度。
+`Date`：当前GMT 时间。
+`Expiress`：响应内容过期时间，过期后将不再缓存内容。
+`Last-Modified`：文档的最后改动时间。
+`Location`：告诉客户端到哪里获取文档，一般用于重定向。
+`Refresh`：浏览器在多少秒后刷新文档。
+`Server`：服务器名字。
+`Set-Cookie`：设置和页面关联的Cookie。
+`Date`：表示消息发送时间。
 
 ### websocket与http 区别
 

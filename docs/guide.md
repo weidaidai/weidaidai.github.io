@@ -1,3 +1,27 @@
+> docker上安装
+
+安装mysql-docker
+
+docker 可以执行如下命令一步搭建MySQL数据库：
+
+```
+docker run --name mysql -v $PWD/mysql:/var/lib/mysql -p3306:3306 -eMYSQL_ROOT_PASSWORD=123456 -d mysql:5.7
+```
+
+命令中显示我们使用的是Docker技术并创建一个名字为mysql的容器，然后在容器中把数据关联到本地的MySQL，并把MySQL的3306接口映射到外面的3306，同时为用户设置一个账户密码
+
+- –name：容器名，此处命名为`mysql`
+
+- -e：配置信息，此处配置mysql的root用户的登陆密码
+
+- -p：端口映射，此处映射 主机3306端口 到 容器的3306端口
+
+- -d：后台运行容器，保证在退出终端后容器继续运行
+
+  > docker exec -it mysql(或者容器id) bash
+
+  > mysql -u root -p  在设置密码的时候使用
+
 ## sql语句的在mysql基本操作
 
 >创建数据库和判断
@@ -216,7 +240,7 @@ alter table tb_test2 change use_phone change_use2 int not null comment'修改列
 ALTER TABLE table_name DROP INDEX index_name
 ```
 
-查询
+查询表列属性
 
 ```sql
 desc tb_test2 
