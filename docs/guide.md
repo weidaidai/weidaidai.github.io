@@ -199,6 +199,32 @@ SELECT *FROM products;
 
 > Navicat Premium常用快捷键
 
+如果有外键在执行drop table 操作的时候是有外键约束无法执行删表操作
+
+SET foreign_key_checks = 0;  // 先设置外键约束检查关闭
+
+drop table table1;  // 删除表，如果要删除视图，也是如此
+
+SET foreign_key_checks = 1; // 开启外键约束检查，以保持表结构完整性
+
+> 注意在添加外键的时候要注意和主键的类型要相同
+
+### 表存在时候添加外键
+
+`user` 表：id 为主键
+
+`profile` 表： uid 为主键
+
+简单来说，若表 `profile` 的 `uid` 列 作为表外键（外建名称：`user_profile`），以表 `user` 做为主表，以其 id列 做为参照（`references`），且联动删除/更新操作（`on delete/update cascade`）。则 `user` 表 中删除 `id` 为 1 的记录，会联动删除 `profile` 中 `uid` 为 1 的记录。
+
+B 存在外键 `b_f_k`，以 A 表的 `a_k` 作为参照列，则 A 为主表，B 为从表，A 中某记录更新或删除时将会联动 B 中外键与其关联对应的记录做更新或删除操作。
+
+```sql
+alter table `profile` 
+add constraint `user_profile` foreign key (`uid`) 
+references `user`(`id`) on delete cascade on update cascade;
+```
+
 1.ctrl+r 运行当前查询窗口的所有sql语句
 
 **2.ctrl+shift+r 只运行选中的sql语句**
@@ -309,10 +335,32 @@ update(表名)set修改字段=值，。。。where（主键不变值或者其他
 ## where筛选查询和全部查询
 
 ```sql
+SELECT 列名称, 列名称2,...fieldN 
+FROM table_name
+WHERE field1 LIKE condition1 [AND [OR]] 列名称 = 'somevalue'
+-- 查询
+
+select use_gener from user_info2 where use_gener="男";
+
+-- 和in 配合(查id为2到3数据)
+select user_decribe,use_id from user_info2  where  use_id in(1,3);
+select user_decribe,use_id from user_info2  where  user_decribe in('a','b','c');
+---和or 配合
+select user_decribe,use_id from user_info2  where  user_decribe='a'or user_decribe='b'
+--和like 配合
+select user_decribe from user_info2  where user_decribe like "%a%";  
+---加上order by 排序
+select user_decribe,use_id from user_info2  where user_decribe like "%a%" order by use_id DESC;  
+```
+
+
+
+```sql
+
  select *from 表名；
  -- where可以通过比较（>,<,<=,>=,!=,=）来查询结果
  select *from user_info where use_gener="男";
-  select *from user_info where use_height>=1;
+  select  user_info2 where use_height>=1;
 ```
 
 ```sql
@@ -327,6 +375,7 @@ SELECT field1, field2,...fieldN FROM table_name1, table_name2...
 ## delete删除表内数据
 
 ```sql
+sql语法：DELETE FROM table_name [WHERE Clause]
 delete from 表名 where 删除条件 and 其他条件;
 delete from user_info where use_id=2;
 ```
@@ -340,6 +389,15 @@ select *from TABLE_NAME  where column like %（%表示通配符）
 select *from 表名  where 位置 like %xx%（%表示通配符）
 select *from user_info where use_name like "ke%";
 
+```
+
+```sql
+'%a'     //以a结尾的数据
+'a%'     //以a开头的数据
+'%a%'    //含有a的数据
+'_a_'    //三位且中间字母是a的
+'_a'     //两位且结尾字母是a的
+'a_'     //两位且开头字母是a的
 ```
 
 ## distinct 唯一值
@@ -357,7 +415,22 @@ SELECT distinct user_decribe FROM user_info;
 --会把同列中重复的部分不显示
 ```
 
+## union 两表不重复
 
+> sql语法：select+列名称 +from +table1 union select +列名称+from +table2;
+
+```SQL
+select name from user_2 union SELECT use_gener FROM user_info2;
+```
+
+**UNION 语句**：用于将不同表中相同列中查询的数据展示出来；（不包括重复数据）
+
+**UNION ALL 语句**：用于将不同表中相同列中查询的数据展示出来；（包括重复数据）
+
+```
+
+SELECT 列名称 FROM 表名称 UNION ALL SELECT 列名称 FROM 表名称 ORDER BY 列名称；
+```
 
 ## group by 分组查询
 
@@ -498,6 +571,9 @@ MySQL的INNER JOIN(也可以省略 INNER 使用 JOIN，效果一样)来连接以
 
 ```
 SELECT  A.column1,b.column2 FROM TABLE_NAME1 A JOIN TABLE_NAME2 B ON A.column1=b.column2
+//以上是使用别名的
+select column1,column2  TABLE_NAME1 JOIN TABLE_NAME2 ON TABLE_NAME1 .column1=TABLE_NAME2.column2
+
 ```
 
 ```sql
