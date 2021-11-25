@@ -378,6 +378,9 @@ SELECT field1, field2,...fieldN FROM table_name1, table_name2...
 sql语法：DELETE FROM table_name [WHERE Clause]
 delete from 表名 where 删除条件 and 其他条件;
 delete from user_info where use_id=2;
+-- 最后，要特别小心的是，和UPDATE类似，不带WHERE条件的DELETE语句会删除整个表的数据：
+
+DELETE FROM table_name;(会把表内全部删除)
 ```
 
 ## 通配符%模糊查找
@@ -531,8 +534,13 @@ LIMIT number
 BETWEEN 操作符在 WHERE 子句中使用，作用是选取介于两个值之间的数据范围。
 
 ```sql
-SELECT * FROM 表名 WHERE 表列 BETWEEN 'xx' AND 'xx'
+SELECT * FROM 表名 WHERE 表列 BETWEEN 'xx' AND 'xx';
+
+-- 查询
+SELECT use_id,user_decribe FROM user_info2 WHERE use_id BETWEEN 2 AND 3;
 ```
+
+![](D:\workspace\weidaidai.github.io\docs\images\between.png)
 
 ## in
 
@@ -545,10 +553,12 @@ SELECT *FROM user_info WHERE use_id IN (1,2);
 
 ![](images\MYSQL_IN.PNG)
 
-怎么感觉和limt差不多
-
 ```sql
 SELECT *FROM user_info WHERE use_id=1 OR use_id=2; //结果一样
+```
+
+```
+SELECT use_id,user_decribe FROM user_info2 limit 1,3;
 ```
 
 
@@ -654,7 +664,11 @@ CREATE TABLE person_tbl
 
 ```sql
 CREATE INDEX indexName ON 表名 (表列名)
+---
+create index field on user_info2(user_decribe(250));-- 因为user_decribe 是text类型没有指定长度使用需要指定一个长度不然会报错
 ```
+
+
 
 #### 删除索引的语法
 
@@ -664,10 +678,25 @@ DROP INDEX [indexName] ON 表名;
 
 如果是CHAR，VARCHAR类型，length可以小于字段实际长度；如果是BLOB和TEXT类型，必须指定 length。
 
-#### 修改表结构(添加索引)
+#### 修改表结构(添加索引)表创建完以后添加
 
 ```
 ALTER table 表名 ADD INDEX indexName(表列名)
+
+//普通索引
+alter table table_name add index index_name (column_list) ;
+//唯一索引
+alter table table_name add unique (column_list) ;
+//主键索引
+alter table table_name add primary key (column_list) ;
+```
+
+> show index from table_name; 查看索引
+
+强制使用index查询
+
+```sql
+select *FROM user_info2 force index(field) WHERE user_decribe="golang";
 ```
 
 
