@@ -1,4 +1,36 @@
 > docker上安装
+>
+> 遇到power 无法识别中文 可以输入临时命令chcp 65001
+
+mysql中文显示乱码问题
+
+<img src="images\mysql.PNG" style="zoom:60%;" />
+
+首先查看
+
+```sql
+ show variables like '%char%';
+ 
+ -- 设置
+ set character_set_results=utf8;
+ set character_set_connection=utf8;
+ set character_set_client=utf8;
+ ....
+ -- 除了
+ character_set_filesystem
+```
+
+如果还是不行查看表或者行是否没设置utf8
+
+```text
+---查看表
+show table status from test like '表名'\G;
+如果有
+ ALTER TABLE 表名 CONVERT TO CHARACTER SET utf8 需要修改的项;
+
+---查看列 
+show full columns from product\G;
+```
 
 安装mysql-docker
 
@@ -225,6 +257,12 @@ add constraint `user_profile` foreign key (`uid`)
 references `user`(`id`) on delete cascade on update cascade;
 ```
 
+> 小结
+
+首先要创建一个字段：alter table 表名 add 字段名 字段类型;
+ 再添加外键约束:alter table 需加外键的表 add constraint 外键名 foreign key(需加外键表的字段名) references 关联表名(关联字段名);
+外键名不能重复
+
 1.ctrl+r 运行当前查询窗口的所有sql语句
 
 **2.ctrl+shift+r 只运行选中的sql语句**
@@ -372,6 +410,13 @@ SELECT field1, field2,...fieldN FROM table_name1, table_name2...
  
 ```
 
+替代如果表
+
+```sql
+--replace 和 update 功能差不多
+REPLACE INTO students (id, class_id, name, gender, score) VALUES (1, 1, '小明', 'F', 99);
+```
+
 ## delete删除表内数据
 
 ```sql
@@ -391,6 +436,8 @@ select *from TABLE_NAME  where column like %（%表示通配符）
 -- 有'xx%'在首个位置
 select *from 表名  where 位置 like %xx%（%表示通配符）
 select *from user_info where use_name like "ke%";
+-- 单一表查询
+SELECT user_decribe from user_info2 WHERE user_decribe LIKE "e%";
 
 ```
 
@@ -437,7 +484,7 @@ SELECT 列名称 FROM 表名称 UNION ALL SELECT 列名称 FROM 表名称 ORDER 
 
 ## group by 分组查询
 
-配合函数 conunt（feild)获取符合条件的非null值
+> 配合函数 conunt（feild)获取符合条件的非null值
 
 ```sql
 -- GROUP BY分组查询
@@ -446,7 +493,50 @@ SELECT COUNT(use_id) from user_info
 -- 3
 ```
 
-sum获取相加值
+## 函数
+
+内建 SQL 函数的语法是：
+
+```sql
+SELECT function(列) FROM 表 
+```
+
+> length（）--字符串长度 ，sql中为len()
+
+```sql
+select length(列) from table_name;
+```
+
+> round() 对数字进行四舍五入，最接近的整数，后面+保留多少个分数
+
+```sql
+ select round(use_height,1) from user;
+```
+
+>ucase() 转换大写
+>
+>lcase() 转换为小写
+
+> now()显示现在的日期时间
+
+```bash
+mysql> select round(use_height,1) ,now() 现在的日期 from user;
++---------------------+---------------------+
+| round(use_height,1) | 现在的日期          |
++---------------------+---------------------+
+| 1.6                 | 2021-11-29 09:17:27 |
+| 1.8                 | 2021-11-29 09:17:27 |
+| 5.3                 | 2021-11-29 09:17:27 |
+| 1.7                 | 2021-11-29 09:17:27 |
+| 1.6                 | 2021-11-29 09:17:27 |
++---------------------+---------------------+
+```
+
+
+
+> MySQL不支持FIRST()，LAST()函数。可以返回第一个值和最后一个值
+
+> sum获取相加值
 
 ```sql
 --不带条件
@@ -456,7 +546,7 @@ SELECT SUM(use_height) 用户总身高 from user_info WHERE use_name like '%xiao
 --- 
 ```
 
-avg平均值
+> avg平均值
 
 ```sql
 SELECT AVG(Use_height)用户平均身高 from user_info WHERE use_name like '%xiao%';
@@ -482,6 +572,81 @@ SELECT use_state 状态,use_gener 性别,AVG(Use_height)用户总身高 from use
 ```
 
 ![test8](images\test8.png)
+
+## having 分组筛选
+
+如果想要从 GROUP BY 分组中进行筛选的话，不是用 WHERE 而是使用 HAVING 来进行聚合函数的筛选。
+
+HAVING 子句写法：
+
+**HAVING 子句必须写在GROUP BY 子句之后，其在DBMS 内部的执行顺序也排在GROUP BY 子句之后。**
+
+```xml
+SELECT <列名1>, <列名2>, <列名3>, ……
+FROM <表名>
+GROUP BY <列名1>, <列名2>, <列名3>, ……
+HAVING <分组结果对应的条件>
+```
+
+- WHERE 子句 = 指定行所对应的条件
+
+- HAVING 子句 = 指定组所对应的条件
+
+- WHERE 处理速度比 HAVING 处理速度高
+
+  
+
+```sql
+
+mysql> select use_height,count(use_height)
+    -> from user
+    -> group by use_height;
++------------+-------------------+
+| use_height | count(use_height) |
++------------+-------------------+
+| 1.55       |                 1 |
+| 1.65       |                 1 |
+| 1.80       |                 1 |
+| 5.30       |                 1 |
++------------+-------------------+
+4 rows in set (0.02 sec)
+
+mysql> select use_height,count(*)
+    -> from user
+    -> group by use_height
+    -> having use_height=1.55;
++------------+----------+
+| use_height | count(*) |
++------------+----------+
+| 1.55       |        1 |
++------------+----------+
+1 row in set (0.02 sec)
+-- 条数为2的
+mysql> select use_height,count(*)
+    -> from user
+    -> group by use_height
+    -> having count(*)=2;
+Empty set
+
+```
+
+
+
+## as 别名（可以不写直接起别名）
+
+**Alias** 别名
+
+对table 进行取别名，用别名可以直接调用列
+
+```sql
+select s.use_height,count(*)
+
+FROM user as s --user起别名
+
+group by s.use_height;
+```
+
+
 
 ## order by 排序查询
 
@@ -566,6 +731,27 @@ SELECT use_id,user_decribe FROM user_info2 limit 1,3;
 ## 多表查询
 
 查询多张表的语法是：`SELECT * FROM <表1> <表2>`。
+
+> 聚合查询 w
+
+除了`COUNT()`函数外，SQL还提供了如下聚合函数：
+
+| 函数 | 说明                                   |
+| :--- | :------------------------------------- |
+| SUM  | 计算某一列的合计值，该列必须为数值类型 |
+| AVG  | 计算某一列的平均值，该列必须为数值类型 |
+| MAX  | 计算某一列的最大值                     |
+| MIN  | 计算某一列的最小值                     |
+
+查看有多少条记录
+
+```sql
+SELECT COUNT(*) from user_info2;
+
+--20
+```
+
+
 
 ## join   
 

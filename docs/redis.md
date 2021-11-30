@@ -191,6 +191,60 @@ OK
 (integer) 23
 127.0.0.1:6379> decrby key1 12
 (integer) 11
+# incrbyfloat 增加浮点数 
+127.0.0.1:6379> incrbyfloat jj 0.1
+"10.1"
+127.0.0.1:6379> incrby jj 0.1
+(error) ERR value is not an integer or out of range
+
+#setrange
+#整数: SETRANGE 命令会返回被修改之后， 字符串值的长度。
+127.0.0.1:6379> set ke2 nxxchh
+OK
+127.0.0.1:6379> setrange ke2 3 xx
+(integer) 6
+127.0.0.1:6379> get ke2
+"nxxxxh"
+
+#getrange 截取字符串
+127.0.0.1:6379> get ke2
+"nxxxxh"
+127.0.0.1:6379> getrange ke2 1 3
+"xxx"
+
+#setnx 设置过期时间 以秒为单位 setex +key+second+val
+127.0.0.1:6379> setex kk 12 wei
+OK
+127.0.0.1:6379> ttl kk
+(integer) 4
+127.0.0.1:6379> ttl kk
+(integer) 2
+127.0.0.1:6379> ttl kk
+(integer) 1
+127.0.0.1:6379> ttl kk
+(integer) -2
+127.0.0.1:6379> get kk
+(nil)
+#设置以毫秒为单位过期时间 psetex +key+毫秒+val
+127.0.0.1:6379> psetex kk 12 wei
+OK
+127.0.0.1:6379> get kk
+(nil)
+
+#对val进行追加
+127.0.0.1:6379> append kk 'hello'
+(integer) 5
+127.0.0.1:6379> append kk 'dongdong'
+(integer) 13
+127.0.0.1:6379> get kk
+"hellodongdong"
+#在val进行追加，不适用与数值类型
+127.0.0.1:6379> set math 11
+OK
+127.0.0.1:6379> append math 12
+(integer) 4
+127.0.0.1:6379> get math
+"1112"
 ```
 
 ### list（列表）
@@ -366,7 +420,7 @@ OK
 
 ### hash（哈希）
 
-hash 是一个键值(key=>value)对集合。
+hash 是一个键值对集合。
 
  hash 是一个 string 类型的 field 和 value 的映射表，hash 特别适合用于存储对象
 
@@ -517,7 +571,9 @@ Redis 的 Set 是 string 类型的无序集合，元素不可重复。
 1) "suiji"
 2) "suiji2"
 3) "suiji3"
-
+#Sismember
+#语法：sismember key value
+#作用：判断集合中是否有该元素
 #将指定的元素移除到另一个集合smove+旧set+新set+元素 如果集合不存则创
 127.0.0.1:6379> smembers myset
 1) "two"
@@ -558,6 +614,12 @@ Redis 的 Set 是 string 类型的无序集合，元素不可重复。
 ```
 
 ### Zset（Sorted Set有序集合)
+
+Redis 有序集合和集合一样也是 string 类型元素的集合,且不允许重复的成员。
+
+有序集合的成员是唯一的,但分数(score)却可以重复。
+
+集合是通过哈希表实现的，所以添加，删除，查找的复杂度都是 O(1)。 集合中最大的成员数为 232 - 1 (4294967295, 每个集合可存储40多亿个成员)。
 
 将Set中的元素增加一个权重参数score,元素按score有序排列
 
@@ -677,7 +739,7 @@ geohash 返回经纬11个字符串
 
 
 
-#### Hyperloglog 基数统计
+#### Hyperloglogs 基数统计
 
 基数 （不重复的元素）=5可以接收的误差，可容错
 
@@ -707,9 +769,42 @@ OK
 (integer) 7
 ```
 
-#### bitmap 位图场景
+#### bitmaps 位图场景
 
-后续 补坑。。。。
+> 位存储
+
+统计用户信息，活跃，签到
+
+val 只能是0 和1 两个状态
+
+365天=365bit ，1字节=8bit
+
+365/8=46个bit
+
+```bash
+设置
+127.0.0.1:6379> setbit sign 0 0
+(integer) 0
+127.0.0.1:6379> setbit sign 0 1
+(integer) 0
+127.0.0.1:6379> setbit sign 2 1
+(integer) 0
+127.0.0.1:6379> setbit sign 3 1
+(integer) 0
+127.0.0.1:6379> setbit sign 4 1
+(integer) 0
+127.0.0.1:6379> setbit sign 5 1
+(integer) 0
+127.0.0.1:6379> setbit sign 1 0
+(integer) 0
+#查询
+127.0.0.1:6379> getbit sign 1
+(integer) 0
+127.0.0.1:6379> getbit sign 3
+(integer) 1
+```
+
+
 
 ### 事务处理
 
