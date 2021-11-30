@@ -431,7 +431,7 @@ DELETE FROM table_name;(会把表内全部删除)
 ## 通配符%模糊查找
 
 ```sql
-select *from TABLE_NAME  where column like %（%表示通配符）
+select column from TABLE_NAME  where column like %（%表示通配符）
 -- 有'%xx%'无论是否在一起
 -- 有'xx%'在首个位置
 select *from 表名  where 位置 like %xx%（%表示通配符）
@@ -466,6 +466,8 @@ SELECT distinct user_decribe FROM user_info;
 ```
 
 ## union 两表不重复
+
+要求两表的列长一致
 
 > sql语法：select+列名称 +from +table1 union select +列名称+from +table2;
 
@@ -699,7 +701,7 @@ LIMIT number
 BETWEEN 操作符在 WHERE 子句中使用，作用是选取介于两个值之间的数据范围。
 
 ```sql
-SELECT * FROM 表名 WHERE 表列 BETWEEN 'xx' AND 'xx';
+SELECT 列名 from 表名 WHERE 列名 BETWEEN val AND val;
 
 -- 查询
 SELECT use_id,user_decribe FROM user_info2 WHERE use_id BETWEEN 2 AND 3;

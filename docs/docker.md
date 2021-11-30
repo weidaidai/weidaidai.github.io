@@ -24,7 +24,91 @@
 
 通常，一个仓库会包含同一个软件不同版本的镜像，而标签就常用于对应该软件的各个版本。我们可以通过 `<仓库名>:<标签>` 的格式来指定具体是这个软件哪个版本的镜像。如果不给出标签，将以 `latest` 作为默认标签。
 
+## 容器制作
 
+```bash
+docker run -p 6379:6379 --name redis -v $PWD/data:/data -d redis:latest redis-server --appendonly yes
+```
+
+例如制作一个redis的容器
+
+> -e 设置环境变量
+
+> -- name 容器名
+
+> -v &PWD目录挂载
+
+> -d +镜像  后台运行
+
+> -m +val m设置容器的内存上限，--memory-swap=600M
+
+> -p 6666:8888 本机端口映射到容器端口，127.0.0.1：
+
+> --rm 容器停止后删除
+
+> 连接到container内部的tty 语法如下
+> $ docker exec -it <container name/id> /bin/bash
+
+比如连接redis和MySQL
+
+docker exec -it container id redis-cli/mysql bash
+
+> -- wget -o-表示使用docker的wget命令
+
+[docker容器]wget命令是什么？wget命令用来从指定的URL下载文件
+
+使用wget -O下载并以不同的文件名保存(-O：下载文件到对应目录，并且修改文件名称)
+
+```
+wget -O wordpress.zip http://www.minjieren.com/download.aspx?id=1080
+```
+
+使用wget -b后台下载
+
+```
+wget -b <a href="http://www.minjieren.com/wordpress-3.1-zh_CN.zip">http://www.minjieren.com/wordpress-3.1-zh_CN.zip</a>
+```
+
+备注： 你可以使用以下命令来察看下载进度：tail -f wget-log
+
+> docker tag **用于给镜像打标签** 
+
+docker会员可以自动更新镜像
+
+<name>[:<tag>]，<tag>不写默认为latest
+
+```bash
+#语法
+docker tag old-image[:old-tag] new-image[:new-tag]
+```
+
+![](images\tag.PNG)
+
+tag似乎更加灵活，docker将文件等信息的变动抽象为一次次的commit，每一次commit以后可能走向不同的分支，当我们完成dockerfile的构建后，会生成一串无规则的字符串代表此次生成的ID，此时，tag的作用就是为他创建一个友好的NAME，方便我们对镜像库的管理。
+
+> 查看容器log
+
+docker logs +container id
+
+
+
+## 镜像的制作
+
+
+
+Don’t run as root
+Timezone problem
+Minify image size （使用alpine系列的Base image, alpine是一个精简版linux，镜像基于alpine构建所以体积也小。docker pull redis:6.2.4-alpine 仅为23M ）
+Always pull （docker build --pull ...指定版本）
+PID=1  PID namespace（名空间）
+
+docker 是推崇一个容器一个进程(one process per container)”的方式 
+
+PID 在 LINUX中 当内核初始化完毕之后，会启动一个init进程，这个进程是整个操作系统的第一个用户进程，所以它的进程ID为1，也就是我们常说的PID1进程
+
+比如查看redis容器的PID
+
+![](images\PID.PNG)
 
 > dockerfile
 
@@ -133,7 +217,9 @@ hello  /
 
 exit或者ctrl+D（其他容器也一样）
 
+**docker inspect :** 获取容器/镜像的元数据。
 
+docker inspect + container id
 
 ## 说明
 
@@ -142,11 +228,11 @@ exit或者ctrl+D（其他容器也一样）
 
 参考[Dockerfile 中对常用命令详解 - Earen - 博客园 (cnblogs.com)](https://www.cnblogs.com/Earen/p/15337421.html)
 
-## 约定
+> 约定
 
 命令不区分大小写，但是命名约定为全部大写。
 
-## 常用命令
+## dockerfile常用命令
 
 ### FROM
 
@@ -280,9 +366,29 @@ ENTRYPOINT ["dotnet", "HanddayRetail.MallApi.dll"]
 
 
 
+## 微服务
 
+下载
 
+Nginx是一款自由的、开源的、高性能的HTTP服务器和反向代理服务器；同时也是一个IMAP、POP3、SMTP代理服务器；Nginx可以作为一个HTTP服务器进行网站的发布处理，另外Nginx可以作为反向代理进行负载均衡的实现
 
+1.使用docker 下载nginx 镜像 docker pull nginx
+
+2.启动nginx
+
+docker run --name nginx -p 80:80 -d nginx
+
+这样就简单的把nginx启动了，但是我们想要改变配置文件nginx.conf ，进入容器,命令：
+
+docker exec -it nginx bash
+
+nginx.conf配置文件在 /etc/nginx/ 下面，但是你使用vim nginx.conf 或者vi nginx.conf
+
+apt-get update 完成之后 apt-get install vim
+
+docker pull nginx
+
+docker run --name nginx -p 80:80 -d nginx
 
 
 

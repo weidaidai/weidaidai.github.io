@@ -447,6 +447,20 @@ hash 是一个键值对集合。
 "19"
 127.0.0.1:6379[2]> type user#看类型
 hash
+
+#删除hdel内容
+
+127.0.0.1:6379> hgetall user2
+1) "age"
+2) "18"
+3) "name"
+4) "weidong"
+127.0.0.1:6379> hdel user2 age
+(integer) 1
+127.0.0.1:6379> hgetall user2
+1) "name"
+2) "weidong"
+
 ##hmset设置多个##
 127.0.0.1:6379[2]> hmset user1 field1 hello fierld2 world #设置多个
 OK
@@ -498,7 +512,7 @@ OK
 127.0.0.1:6379[2]> hget user1:1 name
 "xiaoming"
 
-
+##查看数量hlen+key
 
 ```
 
