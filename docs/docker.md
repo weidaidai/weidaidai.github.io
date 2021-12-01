@@ -2,8 +2,6 @@
 
 **docker** 包括三个基本概念
 
-
-
 > **镜像**（`Image`）
 
 操作系统分为 **内核** 和 **用户空间**。对于 `Linux` 而言，内核启动后，会挂载 `root` 文件系统为其提供用户空间支持。而 **Docker 镜像**（`Image`），就相当于是一个 `root` 文件系统。比如官方镜像 `ubuntu:18.04` 就包含了完整的一套 Ubuntu 18.04 最小系统的 `root` 文件系统。
@@ -30,7 +28,7 @@
 docker run -p 6379:6379 --name redis -v $PWD/data:/data -d redis:latest redis-server --appendonly yes
 ```
 
-例如制作一个redis的容器
+例如制作以上redis的容器
 
 > -e 设置环境变量
 
@@ -42,7 +40,7 @@ docker run -p 6379:6379 --name redis -v $PWD/data:/data -d redis:latest redis-se
 
 > -m +val m设置容器的内存上限，--memory-swap=600M
 
-> -p 6666:8888 本机端口映射到容器端口，127.0.0.1：
+> -p 6666:8888 本机端口映射到容器端口，127.0.0.1:6666可访问
 
 > --rm 容器停止后删除
 
@@ -73,7 +71,7 @@ wget -b <a href="http://www.minjieren.com/wordpress-3.1-zh_CN.zip">http://www.mi
 
 > docker tag **用于给镜像打标签** 
 
-docker会员可以自动更新镜像
+docker会员可以自动更新镜像，但是普通用户不会
 
 <name>[:<tag>]，<tag>不写默认为latest
 
@@ -92,19 +90,15 @@ docker logs +container id
 
 
 
-## 镜像的制作
+## 规范
 
-
-
-Don’t run as root
-Timezone problem
+Don’t run as root 
+Timezone problem  根据时区
 Minify image size （使用alpine系列的Base image, alpine是一个精简版linux，镜像基于alpine构建所以体积也小。docker pull redis:6.2.4-alpine 仅为23M ）
 Always pull （docker build --pull ...指定版本）
 PID=1  PID namespace（名空间）
 
 docker 是推崇一个容器一个进程(one process per container)”的方式 
-
-PID 在 LINUX中 当内核初始化完毕之后，会启动一个init进程，这个进程是整个操作系统的第一个用户进程，所以它的进程ID为1，也就是我们常说的PID1进程
 
 比如查看redis容器的PID
 
