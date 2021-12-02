@@ -1,4 +1,4 @@
-## docker
+## Docker
 
 **docker** 包括三个基本概念
 
@@ -22,7 +22,7 @@
 
 通常，一个仓库会包含同一个软件不同版本的镜像，而标签就常用于对应该软件的各个版本。我们可以通过 `<仓库名>:<标签>` 的格式来指定具体是这个软件哪个版本的镜像。如果不给出标签，将以 `latest` 作为默认标签。
 
-## 容器制作
+## container容器制作
 
 ```bash
 docker run -p 6379:6379 --name redis -v $PWD/data:/data -d redis:latest redis-server --appendonly yes
@@ -34,7 +34,7 @@ docker run -p 6379:6379 --name redis -v $PWD/data:/data -d redis:latest redis-se
 
 > -- name 容器名
 
-> -v &PWD目录挂载
+> -v &PWD目录挂载本地:容器
 
 > -d +镜像  后台运行
 
@@ -88,14 +88,18 @@ tag似乎更加灵活，docker将文件等信息的变动抽象为一次次的co
 
 docker logs +container id
 
+> 推送镜像
 
+登录后通过docker push 来推送自己的镜像
+
+docker tag xx(镜像) 用户名/xx(镜像名)
 
 ## 规范
 
 Don’t run as root 
 Timezone problem  根据时区
 Minify image size （使用alpine系列的Base image, alpine是一个精简版linux，镜像基于alpine构建所以体积也小。docker pull redis:6.2.4-alpine 仅为23M ）
-Always pull （docker build --pull ...指定版本）
+Always pull （docker build --pull ...指定版本,`因为本地镜像不会自动更新`）
 PID=1  PID namespace（名空间）
 
 docker 是推崇一个容器一个进程(one process per container)”的方式 
@@ -155,7 +159,7 @@ CMD /app/main
 
 hello  /
 
-## 基础命令
+## docker基础命令
 
 开始创建在当前目录下
 
@@ -215,18 +219,20 @@ exit或者ctrl+D（其他容器也一样）
 
 docker inspect + container id
 
-## 说明
+## dockerfile构建image
 
 > Dockerfile 是一个用来构建镜像的文本文件，文本内容包含了一条条构建镜像所需的指令和说明。
 > 在Dockerfile 中命令书写对先后顺序及表示其执行对顺序，在书写时需注意。
 
-参考[Dockerfile 中对常用命令详解 - Earen - 博客园 (cnblogs.com)](https://www.cnblogs.com/Earen/p/15337421.html)
+ [参考](https://www.cnblogs.com/Earen/p/15337421.html)
+
+[文档](https://yeasy.gitbook.io/docker_practice/)
 
 > 约定
 
 命令不区分大小写，但是命名约定为全部大写。
 
-## dockerfile常用命令
+## dockerfile常用command
 
 ### FROM
 
@@ -358,11 +364,15 @@ ENTRYPOINT ["dotnet", "HanddayRetail.MallApi.dll"]
 
 ## 部署多个 docker compose
 
+待续....
+
+
+
 
 
 ## 微服务
 
-下载
+> Nginx
 
 Nginx是一款自由的、开源的、高性能的HTTP服务器和反向代理服务器；同时也是一个IMAP、POP3、SMTP代理服务器；Nginx可以作为一个HTTP服务器进行网站的发布处理，另外Nginx可以作为反向代理进行负载均衡的实现
 

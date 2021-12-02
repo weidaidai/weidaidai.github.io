@@ -166,6 +166,41 @@ post 向指定资源提交数据进行处理请求（例如提交表单或者上
 - `POST 方法` 安全性更高：`GET 请求`一般是明文传输，不利于传输敏感数据。`POST 请求`内容在请求体中，更方便加密，提高安全性。
 - `POST 方法`传输的数据量更大：`GET 请求`内容在URL 中，因此有大小限制，而`POST 请求` 内容在请求体中，理论上没有大小限制。
 
+## Content-Type的类型常见类型
+
+text/html ： HTML格式
+
+text/plain ：纯文本格式
+
+text/xml ： XML格式
+
+image/gif ：gif图片格式
+
+image/jpeg ：jpg图片格式
+
+image/png：png图片格式
+
+Content-Type的类型如下：
+
+以application开头的媒体格式类型：
+
+application/xhtml+xml ：XHTML格式
+
+application/xml ： XML数据格式
+
+application/atom+xml ：Atom XML聚合格式
+
+application/json ： JSON数据格式
+
+application/pdf ：pdf格式
+
+application/msword ： Word文档格式
+
+application/octet-stream ： 二进制流数据（如常见的文件下载）
+
+application/x-www-form-urlencoded ： 中默认的encType，form表
+原文链接：https://blog.csdn.net/qq_24147051/article/details/90477756
+
 ### HTTP的状态码
 
 HTTP 状态码分为5 种类型，由三个十进制数字组成。第一个数字（`1-5`）代表状态码的分类，后两位是其含义。

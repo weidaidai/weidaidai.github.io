@@ -180,6 +180,27 @@ TIMESTAMP类型有专有的自动更新特性，将在后面描述。
 | LONGBLOB   | 0-4 294 967 295 bytes | 二进制形式的极大文本数据        |
 | LONGTEXT   | 0-4 294 967 295 bytes | 极大文本数据                    |
 
+### 创建临时表
+
+创建临时表的基本语法如下：
+
+多一个temporary
+
+```sql
+CREATE TEMPORARY TABLE table_name(
+   column1 datatype,
+   column2 datatype,
+   column3 datatype,
+   .....
+   columnN datatype,
+   PRIMARY KEY( one or more columns )
+);
+```
+
+删表也一样
+
+drop table table_name
+
 ### 外键
 
 > 外键foreign key 和外键references
@@ -262,6 +283,8 @@ references `user`(`id`) on delete cascade on update cascade;
 首先要创建一个字段：alter table 表名 add 字段名 字段类型;
  再添加外键约束:alter table 需加外键的表 add constraint 外键名 foreign key(需加外键表的字段名) references 关联表名(关联字段名);
 外键名不能重复
+
+> navicat 快捷键
 
 1.ctrl+r 运行当前查询窗口的所有sql语句
 
@@ -465,9 +488,9 @@ SELECT distinct user_decribe FROM user_info;
 --会把同列中重复的部分不显示
 ```
 
-## union 两表不重复
+## union 两表不重复元素
 
-要求两表的列长一致
+注意：要求两表的列长一致
 
 > sql语法：select+列名称 +from +table1 union select +列名称+from +table2;
 
