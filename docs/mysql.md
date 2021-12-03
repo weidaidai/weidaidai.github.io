@@ -849,6 +849,89 @@ SELECT a.runoob_id, a.runoob_author, b.runoob_count FROM runoob_tbl a RIGHT JOIN
 
 ![test15](images\test15.png)
 
+## SQL逻辑运算
+
+[Mysql 逻辑运算符详解文章来源](https://www.cnblogs.com/xuchunlin/p/6235373.html)
+
+逻辑运算符又称为布尔运算符，用来确认表达式的真和假。MySQL 支持4 种逻辑运算符，如表4-3 所示。
+
+表4-3             MySQL 中的逻辑运算符
+
+| 运算符     | 作用     |
+| ---------- | -------- |
+| NOT 或！   | 逻辑非   |
+| AND 或&&   | 逻辑与   |
+| OR 或 \|\| | 逻辑或   |
+| XOR        | 逻辑异或 |
+
+
+
+ 　““NOT”或“！”表示逻辑非。返回和操作数相反的结果：当操作数为0（假），则返回值为1，否则值为0。但是有一点除外，那就是NOT NULL 的返回值为NULL，这一点请大家注意。如下例所示：
+
+[![复制代码](https://common.cnblogs.com/images/copycode.gif)](javascript:void(0);)
+
+```
+mysql> select not 0, not 1, not null ;
++-------+-------+----------+
+| not 0 | not 1 | not null |
++-------+-------+----------+
+| 1 | 0 | NULL |
++-------+-------+----------+
+1 row in set (0.00 sec)
+```
+
+[![复制代码](https://common.cnblogs.com/images/copycode.gif)](javascript:void(0);)
+
+ ““AND”或“&&”表示逻辑与运算。当所有操作数均为非零值并且不为NULL 时，计算所得结果为1，当一个或多个操作数为0 时，所得结果为0，操作数中有任何一个为NULL 则返回值为NULL。如下例所示：
+
+[![复制代码](https://common.cnblogs.com/images/copycode.gif)](javascript:void(0);)
+
+```
+mysql> select (1 and 1),(0 and 1) ,(3 and 1 ) ,(1 and null);
++-----------+-----------+------------+--------------+
+| (1 and 1) | (0 and 1) | (3 and 1 ) | (1 and null) |
++-----------+-----------+------------+--------------+
+| 1 | 0 | 1 | NULL |
++-----------+-----------+------------+--------------+
+1 row in set (0.00 sec)
+```
+
+[![复制代码](https://common.cnblogs.com/images/copycode.gif)](javascript:void(0);)
+
+ “OR”或“||”表示逻辑或运算。当两个操作数均为非NULL 值时，如有任意一个操作数为非零值，则结果为1，否则结果为0。当有一个操作数为NULL 时，如另一个操作数为非零值，则结果为1，否则结果为NULL。假如两个操作数均为NULL，则所得结果为NULL。如下例所示：
+
+[![复制代码](https://common.cnblogs.com/images/copycode.gif)](javascript:void(0);)
+
+```
+mysql> select (1 or 0) ,(0 or 0),(1 or null) ,(1 or 1),(null or null);
++----------+----------+-------------+----------+----------------+
+| (1 or 0) | (0 or 0) | (1 or null) | (1 or 1) | (null or null) |
++----------+----------+-------------+----------+----------------+
+| 1 | 0 | 1 | 1 | NULL |
++----------+----------+-------------+----------+----------------+
+1 row in set (0.00 sec)
+```
+
+[![复制代码](https://common.cnblogs.com/images/copycode.gif)](javascript:void(0);)
+
+ “XOR”表示逻辑异或。当任意一个操作数为NULL 时，返回值为NULL。对于非NULL 的操作数，如果两个的逻辑真假值相异，则返回结果1；否则返回0。如下例所示：
+
+[![复制代码](https://common.cnblogs.com/images/copycode.gif)](javascript:void(0);)
+
+```
+mysql> select 1 xor 1 ,0 xor 0,1 xor 0,0 xor 1,null xor 1;
++---------+---------+---------+---------+------------+
+| 1 xor 1 | 0 xor 0 | 1 xor 0 | 0 xor 1 | null xor 1 |
++---------+---------+---------+---------+------------+
+| 0 | 0 | 1 | 1 | NULL |
++---------+---------+---------+---------+------------+
+1 row in set (0.00 sec)
+```
+
+[![复制代码](https://common.cnblogs.com/images/copycode.gif)](javascript:void(0);)
+
+ 
+
 ## 索引
 
 索引分单列索引和组合索引。单列索引，即一个索引只包含单个列，一个表可以有多个单列索引，但这不是组合索引。组合索引，即一个索引包含多个列。

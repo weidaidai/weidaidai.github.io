@@ -178,6 +178,8 @@ Content-Type代表发送端（客户端|服务器）发送的实体数据的数�
 比如：Content-Type：text/html;
 代表发送端发送的数据格式是html。
 
+"application/xml" 和 "text/xml"两种类型， 二者功能一模一样，唯一的区别就是编码格式，text/xml忽略xml头所指定编码格式而默认采用us-ascii编码，而application/xml会根据xml头指定的编码格式来编码。
+
 ```bash
 text/html : HTML格式 (最常见)
 
@@ -260,7 +262,7 @@ Windows 下安装curl
 
 上面命令向`www.example.com`发出 GET 请求，服务器返回的内容会在命令行输出。
 
-curl -v www.baidu.com
+curl -v www.sina.com
 
 ![](images\http请求.PNG)
 

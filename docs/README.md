@@ -1,3 +1,5 @@
+
+
 ## 	linux安装
 
 - 下载到
@@ -69,11 +71,7 @@
 "github.com/go-sql-driver/mysql"
 ```
 
-## 关于goland看源码
-
-![image-20210720131912634](C:\Users\16451\AppData\Roaming\Typora\typora-user-images\image-20210720131912634.png)
-
-![](images/test.jpg)
+> 关于goland看源码
 
 driver结构
 
@@ -84,8 +82,6 @@ T: 类型
 m：方法
 
 F : 函数
-
-![img](https://img-blog.csdn.net/2018102300554777?watermark/2/text/aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L0plZmZpZA==/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70)
 
 用git的命令
 
@@ -1445,6 +1441,9 @@ fmt.Printf("%v", string(data))
 }
 ```
 
+规范注释和单元测试
 
+[Golang 注释规范 - ZhiChao& - 博客园 (cnblogs.com)](https://www.cnblogs.com/zhichaoma/p/12509999.html)
 
-# MyGruvbox Theme插件
+[go-test 单元测试](https://studygolang.gitbook.io/learn-go-with-tests/)
+
