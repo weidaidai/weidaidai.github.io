@@ -219,10 +219,9 @@ exit或者ctrl+D（其他容器也一样）
 
 docker inspect + container id
 
-## dockerfile构建image
+> docker attach + container_id 查看容器被访问状态
 
-> Dockerfile 是一个用来构建镜像的文本文件，文本内容包含了一条条构建镜像所需的指令和说明。
-> 在Dockerfile 中命令书写对先后顺序及表示其执行对顺序，在书写时需注意。
+
 
  [参考](https://www.cnblogs.com/Earen/p/15337421.html)
 
@@ -232,7 +231,37 @@ docker inspect + container id
 
 命令不区分大小写，但是命名约定为全部大写。
 
-## dockerfile常用command
+## registry （私有仓库配置）
+
+```dockerfile
+$ docker run -d -p 5000:5000 --restart=always --name registry registry -v /opt/data/registry:/var/lib/registry
+```
+
+
+
+
+
+### volume数据卷
+
+`数据卷` 是被设计用来持久化数据的，它的生命周期独立于容器
+
+
+
+```
+$ docker volume rm +volume_name
+### 
+```
+
+## dockerfile构建image
+
+> Dockerfile 是一个用来构建镜像的文本文件，文本内容包含了一条条构建镜像所需的指令和说明。
+> 在Dockerfile 中命令书写对先后顺序及表示其执行对顺序，在书写时需注意。
+
+在cmd中
+
+
+
+### dockerfile常用command
 
 ### FROM
 
@@ -315,6 +344,8 @@ ADD src/nuget.config nuget.config
 
 ### RUN
 
+用于在image里执行指令，安装软件和下载文件
+
 > `RUN` 在shell或者exec的环境下执行的命令。`RUN` 指令会在新创建的镜像上添加新的层面，接下来提交的结果用在Dockerfile的下一条指令中。
 > 语法如下：
 
@@ -394,7 +425,7 @@ docker pull nginx
 
 docker run --name nginx -p 80:80 -d nginx
 
-
+>
 
 
 

@@ -168,38 +168,67 @@ post 向指定资源提交数据进行处理请求（例如提交表单或者上
 
 ## Content-Type的类型常见类型
 
-text/html ： HTML格式
+Content-Type是返回消息中非常重要的内容，表示后面的文档属于什么MIME类型。Content-Type: [type]/[subtype]; parameter。例如最常见的就是text/html
 
-text/plain ：纯文本格式
+Accept代表发送端（客户端）希望接受的数据类型。
+比如：Accept：text/xml;
+代表客户端希望接受的数据类型是xml类型
 
-text/xml ： XML格式
+Content-Type代表发送端（客户端|服务器）发送的实体数据的数据类型。
+比如：Content-Type：text/html;
+代表发送端发送的数据格式是html。
 
-image/gif ：gif图片格式
+```bash
+text/html : HTML格式 (最常见)
 
-image/jpeg ：jpg图片格式
+text/plain :纯文本格式
 
-image/png：png图片格式
+text/xml :XML格式
+
+image/gif :gif图片格式
+
+image/jpeg  :jpg图片格式
+
+image/png :png图片格式
 
 Content-Type的类型如下：
 
-以application开头的媒体格式类型：
+`以application开头的媒体格式类型`
 
-application/xhtml+xml ：XHTML格式
+application/xhtml+xml :XHTML格式
 
-application/xml ： XML数据格式
+application/xml : XML数据格式
 
 application/atom+xml ：Atom XML聚合格式
 
-application/json ： JSON数据格式
+application/json : JSON数据格式
 
-application/pdf ：pdf格式
+application/pdf :pdf格式
 
-application/msword ： Word文档格式
+application/msword : Word文档格式
 
-application/octet-stream ： 二进制流数据（如常见的文件下载）
+application/octet-stream  :二进制流数据（如常见的文件下载）
 
-application/x-www-form-urlencoded ： 中默认的encType，form表
-原文链接：https://blog.csdn.net/qq_24147051/article/details/90477756
+application/x-www-form-urlencoded  :中默认的encType，form表(常见post 提交数据方式 数据key1=val1&key2=val2 的方式进行编码)
+
+multipart/form-data ： 需要在表单中进行文件上传时，就需要使用该格式 (常见post 提交数据方式，需要在表单中进行文件上传时)
+
+
+`以audio开头的常见媒体格式文件：``
+
+'audio/x-wav' : wav文件
+'audio/x-ms-wma' : wma 文件
+'audio/mp3' : mp3文件
+`以video开头的常见媒体格式文件：
+
+ 'video/x-ms-wmv' : wmv文件
+ 'video/mpeg4' : mp4文件
+ 'video/avi' : avi文件
+```
+
+[参考的原文链接1：](https://blog.csdn.net/qq_24147051/article/details/90477756)
+
+[参考的原文链接2](https://segmentfault.com/a/1190000013056786)
 
 ### HTTP的状态码
 
@@ -207,7 +236,7 @@ HTTP 状态码分为5 种类型，由三个十进制数字组成。第一个数�
 
 ![](images\状态码.PNG)
 
-![](images\常见状态码.PNG)
+![4000](images\常见状态码.PNG)
 
 ### CURL
 
