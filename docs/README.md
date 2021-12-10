@@ -42,7 +42,9 @@
 
   - 创建三个bin/pkg/src
 
-    
+    > src 存放源代码（比如：.go .c .h .s等）
+    > pkg 编译后生成的文件（比如：.a）
+    > bin 编译后生成的可执行文件（为了方便，可以把此目录加入到 $PATH 变量中）
 
 - 配置环境变量并设置代理
 
@@ -75,15 +77,7 @@
 
 driver结构
 
-V：值类型
-
-T: 类型
-
-m：方法
-
-F : 函数
-
-用git的命令
+V：值类型  T: 类型  m：方法    F : 函数
 
 ### new和make
 
@@ -494,11 +488,9 @@ func main(){
 | append         | 用来追加元素到数组、slice中                                  |
 | panic和recover | 用来做错误处理                                               |
 
-## 指针
+## struct
 
-
-
-## 结构体
+`结构体`定义完之后，并不能直接使用，因此此时还没有分配内存，因此，我们必须在定义完结构体，并实例话之后才可以使用结构体。
 
 声明结构体
 
@@ -532,6 +524,84 @@ p:=profile{
 }//如果不想用某个值实例化值为“nil”
 ```
 
+> Golang 中结构体的实例化主要有三种方式，分别为：使用变量定义的方式、使用 new 分配内存和使用 & 符号定义结构体。使用变量定义的方式：
+
+```
+var varName StructName
+```
+
+```go
+//使用变量定义的方式，实例化一个名为 Student 的结构体
+	type Student struct {
+		Name string
+		Age int
+		Score float64
+	}
+	var stu Student
+	stu.Name = "kongzi"
+	stu.Age = 1998
+	stu.Score = 100.0
+	fmt.Println("Student =", stu)
+//Student = {kongzi 1998 100}
+
+```
+
+> 使用 new 分配内存的方式：
+
+```
+var varName = new(StructName)
+```
+
+```go
+	//使用new分配内存的方式，实例化一个名为 Student 的结构体
+	type Student struct {
+		Name string
+		Age int
+		Score float64
+	}
+	var stu = new(Student)
+	stu.Name = "kongzi"
+	stu.Age = 1998
+	stu.Score = 100.0
+	fmt.Println("Student =", stu)
+
+//输出Student = &{kongzi 1998 100}
+
+```
+
+> 使用取地址 & 符号定义结构体：
+
+> 使用 & 定义一个名为 varName 的结构体，使用 & 符号定义时，结构体名后面必须要加 {}。
+
+```
+var varName = &StructName{}
+```
+
+```go
+//第一张
+type Student struct {
+		Name string
+		Age int
+		Score float64
+	}
+	var stu = &Student{}
+	stu.Name = "kongzi"
+	stu.Age = 1998
+	stu.Score = 100.0
+	fmt.Println("Student =", stu)
+//输出 Student = &{kongzi 1998 100}
+
+//第二种简写(会自动匹配对应内容)
+
+	stu:=&Student{
+		"kongzi",
+		1998,
+		100.0,
+	fmt.Println("Student =", stu)
+//输出 Student = &{kongzi 1998 100}
+
+```
+
 结构体继承
 
 ```go
@@ -554,9 +624,31 @@ func main() {
 //输出结果如下，可见staffInfo.companyName 和 staffInfo.company.companyName 的效果是一样的
 ```
 
+## 回调函数
+
+这里的排序函数就是回调函数。每取一次i和j对应的元素，就调用一次less函数。
+
+```go
+s1 := []int{112, 22, 52, 32, 12}
+// 定义排序函数
+less := func(i, j int) bool {
+   // 降序排序
+   return s1[i] > s1[j]
+   // 升序排序：s1[i] < s1[j]
+}
+//
+sort.SliceStable(s1, less)
+fmt.Println(s1)
+
+```
+
 ## 结构体构造函数
 
 下方的代码就实现了一个`person`的构造函数。 因为`struct`是值类型，如果结构体比较复杂的话，值拷贝性能开销会比较大，所以该构造函数返回的是结构体指针类型。
+
+**加&符号和new的是指针对象，没有的则是值对象，这点和php、java不一致，在传递对象的时候要根据实际情况来决定是要传递指针还是值。**
+
+tips：当对象比较小的时候传递指针并不划算。
 
 ```go
 type person struct {
@@ -586,16 +678,28 @@ fmt.Printf("%#v\n", p9) //&main.person{name:"张三", city:"沙河", age:90}
 方法的定义格式如下：
 
 ```go
-func (接收者变量 接收者类型) 方法名(参数列表) (返回参数) {
+func (接收者变量名 接收者类型) 方法名(参数列表) (返回参数) {
     函数体
 }
 ```
 
 - 接收者变量：接收者中的参数变量名在命名时，官方建议使用接收者类型名称首字母的小写，而不是`self`、`this`之类的命名。例如，`Person`类型的接收者变量应该命名为 `p`，`Connector`类型的接收者变量应该命名为`c`等。
+
 - 接收者类型：接收者类型和参数类似，可以是指针类型和非指针类型。
+
 - 方法名、参数列表、返回参数：具体格式与函数定义相同。
 
-  建议全部使用指针接收者
+  > 建议全部使用指针接收者
+  
+  ![img](https://img.jbzj.com/file_images/article/202012/20201215142103.jpg)
+  
+  1、& 是取地址符号 , 即取得某个变量的地址 , 如 ; &a
+  
+  ![img](https://img.jbzj.com/file_images/article/202012/20201215142112.jpg)
+  
+  2、*是指针运算符 , 可以表示一个变量是指针类型 , 也可以表示一个指针变量所指向的存储单元 , 也就是这个地址所存储的值 .
+  
+  ![img](https://img.jbzj.com/file_images/article/202012/20201215142120.jpg)
 
 ```go
 //Person 结构体
@@ -1441,9 +1545,354 @@ fmt.Printf("%v", string(data))
 }
 ```
 
-规范注释和单元测试
+## 规范注释和单元测试
 
 [Golang 注释规范 - ZhiChao& - 博客园 (cnblogs.com)](https://www.cnblogs.com/zhichaoma/p/12509999.html)
 
 [go-test 单元测试](https://studygolang.gitbook.io/learn-go-with-tests/)
+
+## go启动http服务的两种方式
+
+> server
+
+```go
+//ResponseWriter用来“给客户端回发数据”。它是一个interface：
+type ResponseWriter interface {    
+    Header() Header     
+    Write([]byte) (int, error)    
+    WriteHeader(statusCode int) }
+//Request 用来“接收客户端发送的数据”。浏览器发送给服务器的http请求包的内容可以借助r来查看。它对应一个结构体：
+type Request struct {
+    Method string		// 浏览器请求方法 GET、POST…
+    URL *url.URL		// 浏览器请求的访问路径
+	……
+    Header Header		// 请求头部
+    Body io.ReadCloser	// 请求包体
+    RemoteAddr string	// 浏览器地址
+    ……
+    ctx context.Context
+}
+
+```
+
+
+
+> http.Handle 和 http.HandleFunc 
+
+```go
+//http.handle
+
+func Handle(pattern string, handler Handler) { DefaultServeMux.Handle(pattern, handler) }
+
+
+//第二个参数是Handler这个接口, 这个接口有一个ServeHTTP()的方法
+type Handler interface {
+	ServeHTTP(ResponseWriter, *Request)
+}
+```
+
+第一个参数是pattern string 文件的路径
+
+第二个参数是Handler这个接口, 这个接口有一个ServeHTTP()的方法
+
+```javascript
+type Handler interface {
+	ServeHTTP(ResponseWriter, *Request)
+}
+```
+
+所以这个方法使用的时候需要自己去定义struct实现这个**Handler**接口。
+
+```go
+package main
+
+import (
+	"net/http"
+	"log"
+)
+
+type httpServer struct {
+}
+
+func (dms *httpServer) ServeHTTP(w http.ResponseWriter, r *http.Request) {
+	w.Write([]byte(r.URL.Path))
+}
+
+func main() {
+    //实例化
+    server:= httpServer{}
+	http.Handle("/", &server) //uri
+	log.Fatal(http.ListenAndServe("localhost:9000", nil))
+// 当参数2为nil时，服务端调用http.DefaultServeMux进行处理
+```
+
+第二种方法
+
+这个第二个参数是一个方法，参数是ResponseWriter, 和 *Request 所以使用的时候需要传方法。
+
+```go
+func HandleFunc(pattern string, handler func(ResponseWriter, *Request)) {
+	DefaultServeMux.HandleFunc(pattern, handler)
+}
+```
+
+```go
+package main
+
+import (
+	"net/http"
+	"log"
+)
+
+func main() {
+	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
+		w.Write([]byte(r.URL.Path))
+	})
+	log.Fatal(http.ListenAndServe("localhost:9000", nil))
+// 当参数2为nil时，服务端调用http.DefaultServeMux进行处理
+```
+
+一般使用HandleFunc
+
+> ServeMux(服务复用器)
+
+上面的代码中可以看到不论是使用`http.HandleFunc`还是`http.Handle`注册路由的处理函数时最后都会用到`ServerMux`结构的`Handle`方法去注册路由处理函数。
+
+我们先来看一下`ServeMux`的定义：
+
+```text
+type ServeMux struct {
+    mu    sync.RWMutex
+    m     map[string]muxEntry
+    es    []muxEntry // slice of entries sorted from longest to shortest.
+    hosts bool       // whether any patterns contain hostnames
+}
+
+type muxEntry struct {
+    h       Handler
+    pattern string
+}
+```
+
+`ServeMux`中的字段`m`，是一个`map`，`key`是[路由表达式](https://www.zhihu.com/search?q=路由表达式&search_source=Entity&hybrid_search_source=Entity&hybrid_search_extra={"sourceType"%3A"article"%2C"sourceId"%3A104182198})，`value`是一个`muxEntry`结构，`muxEntry`结构体存储了路由表达式和对应的`handler`。字段`m`对应的 `map`用于路由的精确匹配而`es`字段的`slice`会用于路由的部分匹配
+
+
+
+> client 
+
+
+
+Response 表示来自 HTTP 请求的响应。一旦收到响应头，客户端和传输从服务器返回响应。响应正文在读取 Body 字段时按需流式传输。
+
+客户端访问web服务器数据，主要使用函数
+
+```go
+func Get(url string) (resp *Response, err error) {
+   return DefaultClient.Get(url)
+}
+```
+
+来完成。读到的响应报文数据被保存在 Response 结构体中。
+
+```go
+type Response struct {
+   Status     string // e.g. "200 OK"
+   StatusCode int    // e.g.  200
+   Proto      string // e.g. "HTTP/1.0"
+   ……
+   Header Header
+   Body io.ReadCloser
+   ……
+}
+```
+
+Get 向指定的 URL 发出 GET。如果响应是以下重定向代码之一，则 Get 在调用 Client 的 CheckRedirect 函数后跟随重定向：
+
+```go
+//    301 (Moved Permanently)
+//    302 (Found)
+//    303 (See Other)
+//    307 (Temporary Redirect)
+//    308 (Permanent Redirect)
+```
+
+```go
+func (r *Request) ParseForm() error {
+	var err error
+	if r.PostForm == nil {
+		if r.Method == "POST" || r.Method == "PUT" || r.Method == "PATCH" {
+			r.PostForm, err = parsePostForm(r
+。。。。。。
+
+//ParseForm 填充 r.Form 和 r.PostForm。对于所有请求，ParseForm 解析来自 URL 的原始查询并更新 r.Form。对于 POST、PUT 和 PATCH 请求，它还读取请求正文，将其解析为表单并将结果放入 r.PostForm 和 r.Form。请求正文参数优先于 r.Form 中的 URL 查询字符串值。如果请求正文的大小尚未受 MaxBytesReader 限制，则大小上限为 10MB。对于其他 HTTP 方法，或者当 Content-Type 不是 applicationx-www-form-urlencoded 时，不读取请求正文，并且将 r.PostForm 初始化为非 nil 的空值。 ParseMultipartForm 自动调用 ParseForm。 ParseForm 是幂等的。 
+```
+
+> server 的完整代码
+
+```go
+package main
+
+import (
+	"fmt"
+	"log"
+	"net/http"
+)
+
+func HelloHandler(w http.ResponseWriter,r *http.Request) {
+	r.ParseForm()
+	fmt.Println(r.Form)
+	//遍历打印解析结果
+	for key, value := range r.Form {
+		fmt.Println(key, value)
+
+	}
+	w.Write([]byte("hello,world"))
+}
+func main(){
+
+	http.HandleFunc("/",HelloHandler)
+
+   err:=http.ListenAndServe("127.0.0.1:8080",nil)
+// 当handler为nil时，服务端调用http.DefaultServeMux进行处理
+	if err != nil {
+		log.Fatal("ListenAndServe",err)
+	}
+}
+
+```
+
+
+
+```bash
+D:\workspace\program\http\server>.\server.exe
+map[age:[24] class:[1411] name:[lisa]]
+age [24]
+class [1411]
+name [lisa]
+
+```
+
+> client 完整代码
+
+```go
+package main
+
+import (
+	"fmt"
+	"io/ioutil"
+	"net/http"
+)
+
+func main() {
+	//使用Get方法获取服务器响应包数据
+	resp, err := http.Get("http://localhost:8080/hello?name=weidaidai&age=24&complany=huaguoshan")
+
+	if err != nil {
+		fmt.Println(err)
+	}
+	defer resp.Body.Close()
+	// 获取服务器端读到的数据
+	fmt.Println("Status = ", resp.Status)         // 状态
+	fmt.Println("StatusCode = ", resp.StatusCode) // 状态码
+	fmt.Println("Header = ", resp.Header)         // 响应头部
+	fmt.Println("Body = ", resp.Body)             // 响应包体
+	//读取body内的内容
+	content, err := ioutil.ReadAll(resp.Body)
+
+	if err != nil {
+		fmt.Println(err)
+	}
+	fmt.Println(string(content))
+
+}
+
+```
+
+```go
+
+packeage:  ioutil. ReadAll
+
+// ReadAll从r读取，直到出现错误或EOF，并返回它读取的数据。
+//成功调用返回err == nil，而不是err == EOF。因为ReadAll
+//定义为从src读取EOF，它不处理从read读取的EOF
+//作为一个错误报告。
+//
+//从Go 1.16开始，这个函数简单地调用io.ReadAll。
+func ReadAll(r io.Reader) ([]byte, error) {
+	return io.ReadAll(r)
+}
+
+```
+
+
+
+```bash
+#编译后执行
+D:\workspace\program\http\client>.\client.exe
+
+Status =  200 OK
+StatusCode =  200
+Header =  map[Content-Length:[11] Content-Type:[text/plain; charset=utf-8] Date:[Thu, 09 Dec 2021 06:12:10 GMT]]
+Body =  &{0xc0000583c0 {0 0} false <nil> 0xfa2f40 0xfa2ec0}
+hello,world
+```
+
+defer resp.body.close()
+
+程序在使用完response后必须关闭回复的主体
+
+post 
+
+```go
+func Post(url, contentType string, body io.Reader) (resp *Response, err error) {
+   return DefaultClient.Post(url, contentType, body)
+}
+```
+
+
+
+>自定义Server
+
+要管理服务端的行为，可以创建一个自定义的Server：
+
+```go
+s := &http.Server{
+	Addr:           ":8080",
+	Handler:        myHandler,
+	ReadTimeout:    10 * time.Second,
+	WriteTimeout:   10 * time.Second,
+	MaxHeaderBytes: 1 << 20,
+}
+log.Fatal(s.ListenAndServe())
+```
+
+
+
+
+
+r.URL.Rawquery(？后的参数)
+
+r.URL.Host（client地址）
+
+r.URL.Path（/ 路径)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
