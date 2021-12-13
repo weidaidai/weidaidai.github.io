@@ -1021,4 +1021,232 @@ MYSQL 事务处理主要有两种方法：
 - **SET AUTOCOMMIT=0** 禁止自动提交
 - **SET AUTOCOMMIT=1** 开启自动提交
 
-事务测试
+
+
+> golang 连接mysql
+
+```go
+/*
+The Code (for copy/paste)
+This is the complete code that you can use to try out the things you’ve learned from this example.
+*/
+
+package main
+
+import (
+    "database/sql"
+    "fmt"
+    "log"
+    "time"
+
+    _ "github.com/go-sql-driver/mysql"
+)
+
+func main() {
+    db, err := sql.Open("mysql", "root:root@(127.0.0.1:3306)/root?parseTime=true")
+    if err != nil {
+        log.Fatal(err)
+    }
+    if err := db.Ping(); err != nil {
+        log.Fatal(err)
+    }
+
+    { // Create a new table
+        query := `
+            CREATE TABLE users (
+                id INT AUTO_INCREMENT,
+                username TEXT NOT NULL,
+                password TEXT NOT NULL,
+                created_at DATETIME,
+                PRIMARY KEY (id)
+            );`
+
+        if _, err := db.Exec(query); err != nil {
+            log.Fatal(err)
+        }
+    }
+
+    { // Insert a new user
+        username := "johndoe"
+        password := "secret"
+        createdAt := time.Now()
+
+        result, err := db.Exec(`INSERT INTO users (username, password, created_at) VALUES (?, ?, ?)`, username, password, createdAt)
+        if err != nil {
+            log.Fatal(err)
+        }
+
+        id, err := result.LastInsertId()
+        fmt.Println(id)
+    }
+
+    { // Query a single user
+        var (
+            id        int
+            username  string
+            password  string
+            createdAt time.Time
+        )
+
+        query := "SELECT id, username, password, created_at FROM users WHERE id = ?"
+        if err := db.QueryRow(query, 1).Scan(&id, &username, &password, &createdAt); err != nil {
+            log.Fatal(err)
+        }
+
+        fmt.Println(id, username, password, createdAt)
+    }
+
+    { // Query all users
+        type user struct {
+            id        int
+            username  string
+            password  string
+            createdAt time.Time
+        }
+
+        rows, err := db.Query(`SELECT id, username, password, created_at FROM users`)
+        if err != nil {
+            log.Fatal(err)
+        }
+        defer rows.Close()
+
+        var users []user
+        for rows.Next() {
+            var u user
+
+            err := rows.Scan(&u.id, &u.username, &u.password, &u.createdAt)
+            if err != nil {
+                log.Fatal(err)
+            }
+            users = append(users, u)
+        }
+        if err := rows.Err(); err != nil {
+            log.Fatal(err)
+        }
+
+        fmt.Printf("%#v", users)
+    }
+
+    {
+        _, err := db.Exec(`DELETE FROM users WHERE id = ?`, 1)
+        if err != nil {
+            log.Fatal(err)
+        }
+    }
+}
+```
+
+> go 事务处理
+
+```go
+package main
+
+import (
+	"database/sql"
+
+	_ "github.com/go-sql-driver/mysql"
+)
+
+func recordStats(db *sql.DB, userID, productID int64) (err error) {
+	tx, err := db.Begin()
+	if err != nil {
+		return
+	}
+
+	defer func() {
+		switch err {
+		case nil:
+			err = tx.Commit()
+		default:
+			tx.Rollback()
+		}
+	}()
+
+	if _, err = tx.Exec("UPDATE products SET views = views + 1"); err != nil {
+		return
+	}
+	if _, err = tx.Exec("INSERT INTO product_viewers (user_id, product_id) VALUES (?, ?)", userID, productID); err != nil {
+		return
+	}
+	return
+}
+
+func main() {
+	// @NOTE: the real connection is not required for tests
+	db, err := sql.Open("mysql", "root@/blog")
+	if err != nil {
+		panic(err)
+	}
+	defer db.Close()
+
+	if err = recordStats(db, 1 /*some user id*/, 5 /*some product id*/); err != nil {
+		panic(err)
+	}
+}
+
+```
+
+```go
+//Tests with sqlmock
+
+package main
+
+import (
+	"fmt"
+	"testing"
+
+	"github.com/DATA-DOG/go-sqlmock"
+)
+
+// a successful case
+func TestShouldUpdateStats(t *testing.T) {
+	db, mock, err := sqlmock.New()
+	if err != nil {
+		t.Fatalf("an error '%s' was not expected when opening a stub database connection", err)
+	}
+	defer db.Close()
+
+	mock.ExpectBegin()
+	mock.ExpectExec("UPDATE products").WillReturnResult(sqlmock.NewResult(1, 1))
+	mock.ExpectExec("INSERT INTO product_viewers").WithArgs(2, 3).WillReturnResult(sqlmock.NewResult(1, 1))
+	mock.ExpectCommit()
+
+	// now we execute our method
+	if err = recordStats(db, 2, 3); err != nil {
+		t.Errorf("error was not expected while updating stats: %s", err)
+	}
+
+	// we make sure that all expectations were met
+	if err := mock.ExpectationsWereMet(); err != nil {
+		t.Errorf("there were unfulfilled expectations: %s", err)
+	}
+}
+
+// a failing test case
+func TestShouldRollbackStatUpdatesOnFailure(t *testing.T) {
+	db, mock, err := sqlmock.New()
+	if err != nil {
+		t.Fatalf("an error '%s' was not expected when opening a stub database connection", err)
+	}
+	defer db.Close()
+
+	mock.ExpectBegin()
+	mock.ExpectExec("UPDATE products").WillReturnResult(sqlmock.NewResult(1, 1))
+	mock.ExpectExec("INSERT INTO product_viewers").
+		WithArgs(2, 3).
+		WillReturnError(fmt.Errorf("some error"))
+	mock.ExpectRollback()
+
+	// now we execute our method
+	if err = recordStats(db, 2, 3); err == nil {
+		t.Errorf("was expecting an error, but there was none")
+	}
+
+	// we make sure that all expectations were met
+	if err := mock.ExpectationsWereMet(); err != nil {
+		t.Errorf("there were unfulfilled expectations: %s", err)
+	}
+}
+
+```
+
