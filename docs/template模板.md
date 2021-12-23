@@ -178,3 +178,177 @@ u2:=map[string]interface{}{
 {{/*a comment*/}}//注释
 <hr>//分页
 ```
+
+Go gin使用html模板
+一、engine.LoadHTMLGlob：推荐
+只有一个参数，通配符，如：template/* 意思是找当前项目路径下template文件夹下所有的html文件
+
+e.g.：engine.LoadHTMLGlob(“templates/*”)
+
+二、engine.LoadHTMLFiles：不推荐
+不定长参数，可以传多个字符串，使用这个方法需要指定所有要使用的html文件路径
+
+e.g.：engine.LoadHTMLFiles(“templates/index.html”,“template/user.html”)
+
+三.指定模板路径
+
+```go
+// 使用*gin.Context下的HTML方法
+
+func Hello(context *gin.Context)  {
+    name := "zhiliao"
+    context.HTML(http.StatusOK,"index.html",name)
+}
+```
+
+注意：不要使用golang里面run，否则会报错
+
+```go
+panic: html/template: pattern matches no files: `templates/*`
+```
+
+
+在cmd运行即可
+
+在cmd运行即可
+
+四、多级目录的模板指定
+如果有多级目录，比如templates下有user和article两个目录，如果要使用里面的html文件，必须得在Load的时候指定多级才可以，比如：engine.LoadHTMLGlob(“templates/**/*”)
+
+1.有几级目录，得在通配符上指明
+
+两级：engine.LoadHTMLGlob("templates/**/*")
+三级：engine.LoadHTMLGlob("templates/**/**/*")
+1
+2
+2.指定html文件
+
+// 除了第一级的templates路径不需要指定，后面的路径都要指定
+e.g.：context.HTML(http.StatusOK,"user/index.html","zhiliao")
+1
+2
+3.在html中
+
+```go
+必须使用
+{{ define "user/index.html" }}
+
+html内容
+
+{{ end }}
+
+包起来
+```
+
+错误
+
+
+
+
+
+gin 模板使用错误
+
+> panic: read tem\public: The handle is invalid.
+
+```go
+r.LoadHTMLGlob("html/tem/*")//html路径要对应 目录路径html(tem(index),main)
+```
+
+>- using env: export GIN_MODE=release - using code: gin.SetMode(gin.ReleaseMode)
+
+将gin的GIN_MODE=release加入环境变量
+
+完整代码
+
+tree
+
+```go
+package main
+
+import (
+	"net/http"
+
+	"github.com/gin-gonic/gin"
+)
+
+func main() {
+	r := gin.Default()
+	r.LoadHTMLGlob("html/tem/*")
+	r.GET("/index", func(c *gin.Context) {
+		c.HTML(http.StatusOK, "index.html", gin.H{"title": "我是测试", "ce": "123456"})
+	})
+	r.Run()
+}
+```
+
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>{{.title}}</title>
+</head>
+<body>
+密码{{.ce}}
+</body>
+</html>
+```
+
+//访问127.0.0.1:8080/index 密码123456
+
+> 分离，新建目录为tem
+
+![](images\tem.PNG)
+
+
+
+```go
+package main
+
+import (
+	"net/http"
+
+	"github.com/gin-gonic/gin"
+)
+
+func main() {
+	r := gin.Default()
+    //二级目录
+	r.LoadHTMLGlob("tem/**/**/*")
+	r.GET("/index", func(c *gin.Context) {
+		c.HTML(http.StatusOK, "user/index.html", gin.H{"title": "我是测试", "address": "123456"})
+	})
+	r.Run()
+}
+```
+
+```html
+{{ define "user/index.html" }}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>{{.title}}</title>
+</head>
+<body>
+我的地址{{.address}}
+</body>
+</html>
+{{ end }}
+
+```
+
+必须使用
+{{ define "xxx/xxx.html" }}
+
+html内容
+
+{{ end }}
+
+包起来
+
+![](images\htm.PNG)

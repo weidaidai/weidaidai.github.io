@@ -166,6 +166,46 @@ post 向指定资源提交数据进行处理请求（例如提交表单或者上
 - `POST 方法` 安全性更高：`GET 请求`一般是明文传输，不利于传输敏感数据。`POST 请求`内容在请求体中，更方便加密，提高安全性。
 - `POST 方法`传输的数据量更大：`GET 请求`内容在URL 中，因此有大小限制，而`POST 请求` 内容在请求体中，理论上没有大小限制。
 
+### RESTful API 
+
+必须有一种统一的机制，方便不同的前端设备与后端进行通信
+
+API与用户的通信协议，总是使用[HTTPs协议](https://www.ruanyifeng.com/blog/2014/02/ssl_tls.html)。
+
+1.应该将API的版本号放入URL。
+
+> ```javascript
+> https://api.example.com/v1
+> ```
+
+2.举例来说，有一个API提供动物园（zoo）的信息，还包括各种动物和雇员的信息，则它的路径应该设计成下面这样。
+
+```go
+- https://api.example.com/v1/zoos
+- https://api.example.com/v1/animals
+- https://api.example.com/v1/employees
+```
+
+对应的sql语句
+
+- GET（SELECT）：从服务器取出资源（一项或多项）。
+- POST（CREATE）：在服务器新建一个资源。
+- PUT（UPDATE）：在服务器更新资源（客户端提供改变后的完整资源）。
+- PATCH（UPDATE）：在服务器更新资源（客户端提供改变的属性）。
+- DELETE（DELETE）：从服务器删除资源
+
+过滤信息
+
+如果记录数量很多，服务器不可能都将它们返回给用户。API应该提供参数，过滤返回结果。
+
+下面是一些常见的参数。
+
+> - ?limit=10：指定返回记录的数量
+> - ?offset=10：指定返回记录的开始位置。
+> - ?page=2&per_page=100：指定第几页，以及每页的记录数。
+> - ?sortby=name&order=asc：指定返回结果按照哪个属性排序，以及排序顺序。
+> - ?animal_type_id=1：指定筛选条件
+
 ## Content-Type的类型常见类型
 
 Content-Type是返回消息中非常重要的内容，表示后面的文档属于什么MIME类型。Content-Type: [type]/[subtype]; parameter。例如最常见的就是text/html
@@ -289,7 +329,7 @@ url www.127.0.0.1:8080
 
 uri  /hello(虚拟目录)
 
-![img](https://img2018.cnblogs.com/blog/1188607/201905/1188607-20190524123004043-1112804791.png)
+![img](images\url.png)
 
 .**参数**：从“？”开始到“#”（或至结束）为止之间的部分为参数部分，又称搜索部分、查询部分。参数间用“&”作为分隔符。
 

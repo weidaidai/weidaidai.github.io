@@ -1250,3 +1250,5 @@ func TestShouldRollbackStatUpdatesOnFailure(t *testing.T) {
 
 ```
 
+//测试整个文件： go test  hello_test.go -v
+//测试单个函数： go test -run TestAdd -v

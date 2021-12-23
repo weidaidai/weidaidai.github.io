@@ -1,5 +1,17 @@
 
 
+> Printf()、Sprintf()、Fprintf() 函数的区别用法是什么？
+
+​	都是输出格式化字符串，只是输出到的目标不一样：
+
+​	Printf() 是把格式化字符串输出到标准到标准输出（一般是屏幕，可以重定向）
+
+​	Printf() 是和标准输出文件（stdout）关联的，Fprintf 则没有这个限制
+
+​	Sprintf() 是把格式化字符串输出到指定的字符串中，可以用一个变量来接受，然后在打印
+
+​	Fprintf() 是把格式字符串输出到指定的文件设备中，所以参数比Printf 多一个文件指针*File
+
 ## 	linux安装
 
 - 下载到
@@ -1865,10 +1877,6 @@ s := &http.Server{
 }
 log.Fatal(s.ListenAndServe())
 ```
-
-
-
-
 
 r.URL.Rawquery(？后的参数)
 
