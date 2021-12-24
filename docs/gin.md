@@ -1,3 +1,5 @@
+### 绑定的注意事项
+
 > - ShouldBindJSON()
 
 **只会返回错误信息，不会往header里面写400的错误状态码**
@@ -39,15 +41,7 @@ func (c *Context) MustBindWith(obj interface{}, b binding.Binding) (err error) {
 	c.ShouldBindWith(obj interface{}, b binding.Binding)
 表单的解析和绑定
 
-
-
-
-
-
-
-同步和异步执行
-
-
+### 同步和异步执行
 
 ```go
 package main
@@ -93,7 +87,7 @@ func main()  {
 
 
 
-定于全局全局中间件
+### 定全局全局中间件
 
 ```bash
 #控制台
@@ -163,3 +157,80 @@ end 200
 request: middle
 time 10.8624ms//时间差执行
 ```
+
+```go
+//加上一个请求，也会经过该中间件
+
+r.GET("/ec", func(c *gin.Context) {
+			c.JSON(200,gin.H{"我是其他请求":"有中间件"})
+		})
+
+start 2021-12-24 09:23:59.8884641 +0800 CST m=+17.207882601
+end 200
+time 10.081ms
+[GIN] 2021/12/24 - 09:23:59 | 200 |      10.081ms |       127.0.0.1 | GET      "/ec"
+start 2021-12-24 09:25:04.5094995 +0800 CST m=+81.828918001
+end 200
+request: middle
+time 0s
+[GIN] 2021/12/24 - 09:25:04 | 200 |            0s |       127.0.0.1 | GET      "/ce"
+```
+
+```go
+func main()  {
+	r:=gin.Default()
+	r.GET("/jubu",middle(), func(c *gin.Context) {
+
+		rep,_:=c.Get("request")
+
+		fmt.Println("request:",rep)
+		//页面显示
+		c.JSON(200,gin.H{"request":rep})
+
+	})
+	r.GET("/ec", func(c *gin.Context) {
+		c.JSON(200,gin.H{"我是其他请求":"没有中间件"})
+	})
+	r.Run()
+}
+```
+
+### 中间件小练习
+
+> *gin.Context是传指针
+
+```go
+package main
+
+import (
+	"fmt"
+	"github.com/gin-gonic/gin"
+	"time"
+)
+
+func Mytime(ctx *gin.Context){
+	start:=time.Now()
+
+	ctx.Next()
+	since:=time.Since(start)
+	fmt.Println(since)
+
+
+}
+func main()  {
+	r:=gin.Default()
+	r.Use(Mytime)
+	r.GET("/one",shopone)
+	r.GET("/two",shoptwo)
+	r.Run()
+}
+func shopone(ctx *gin.Context)  {
+	time.Sleep(5*time.Second)
+
+}
+func shoptwo(ctx *gin.Context)  {
+	time.Sleep(3*time.Second)
+}
+
+```
+
