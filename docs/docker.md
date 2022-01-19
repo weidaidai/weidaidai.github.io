@@ -35,6 +35,10 @@ docker run -p 6379:6379 --name redis -v $PWD/data:/data -d redis:latest redis-se
 > -- name 容器名
 
 > -v &PWD目录挂载本地:容器
+>
+> PWD是一个环境variables，您的shell将扩展到您当前的工作目录。 因此，在这个例子中，它会将当前工作目录（从执行此命令的位置）挂载到容器中的/data。
+>
+> 例如，假设你的当前工作目录是/ home / youruser / somedir，那么你的命令行将在执行之前通过你的shell扩展到这个目录：
 
 > -d +镜像  后台运行
 
@@ -369,7 +373,7 @@ RUN dotnet build "HanddayRetail.MallApi/HanddayRetail.MallApi.csproj" -c Release
 > RUN 是在 docker build。
 
 ```bash
-CMD ["<可执行文件或命令>","<param1>","<param2>",...] 
+CMD ["<可执行文件或命令>","<param1>","<param2>",...] #推荐
 CMD ["param1","param2"]
 CMD command param1 param2
 ```
@@ -395,9 +399,116 @@ ENTRYPOINT ["dotnet", "HanddayRetail.MallApi.dll"]
 
 ## 部署多个 docker compose
 
-待续....
+#### nginx
 
+#### 拉取 nginx 镜像
 
+```
+docker pull nginx
+```
+
+#### 编写 docker-compose.yml 文件
+
+```
+version: '3'
+
+services:
+  nginx:
+    image: nginx
+    container_name: nginx
+    volumes: ["/mnt/nginx/config.d:/etc/nginx/conf.d", "/mnt/static:/static"]
+    ports:
+      - "80:80"
+```
+
+#### conf 文件配置静态文件服务
+
+```
+server {
+        listen 80;
+        server_name localhost;
+        location /vehicle-service/static/image/ {
+                root /static;
+                index index.html;
+        }
+}
+```
+
+#### mysql
+
+### 拉取 mysql 镜像
+
+```
+docker pull mysql
+```
+
+## 编写 docker-compose.yml 文件
+
+```
+version: '3'
+services:
+  mysql:
+    image: mysql
+    container_name: mysql
+    ports:
+      - "3306:3306"
+    volumes:
+    - /mnt/mysql/data:/var/lib/mysql
+    - /mnt/mysql/initdb:/docker-entrypoint-initdb.d
+    - /mnt/mysql/cnf/my.cnf:/etc/my.cnf
+    - /mnt/mysql/cnf/mysql:/etc/mysql
+    - /mnt/mysql/mysql-files:/var/lib/mysql-files
+    command: [
+            '--character-set-server=utf8mb4',
+            '--collation-server=utf8mb4_unicode_ci',
+            '--max_connections=3000'
+    ]
+    environment:
+      MYSQL_ROOT_PASSWORD: "xxxxxxxxxxxxxxx"
+      TZ: "Asia/Shanghai"
+```
+
+## 配置 mysql root 账户可远程连接
+
+```
+docker exec -it mysql /bin/bash #进入容器
+use mysql;
+ALTER USER 'root'@'%' IDENTIFIED WITH mysql_native_password BY 'xxxxxxxxxxxxx';
+grant all privileges on *.* to 'root'@'%';
+flush privileges;
+```
+
+# redis
+
+#### 拉取 redis 镜像
+
+```
+docker pull redis
+```
+
+#### 编写 docker-compose.yml 文件
+
+```
+version: '3.5'
+services:
+  redis:
+    image: "redis:5"
+    container_name: redis
+    command: redis-server /etc/redis/redis.conf
+    ports:
+      - "6379:6379"
+    volumes:
+      - /mnt/redis/data:/data
+      - /mnt/redis/redis.conf:/etc/redis/redis.conf
+```
+
+#### 常用命令
+
+```
+docker-compose up -d   #启动当前目录下 docker-compose.yml 文件的容器
+docker-compose down    #移除镜像，如果修改了 docker-compose.yml 需要重新创建容器才生效
+docker-compose restart #重启容器，不会删除容器，在修改 conf 文件后，需要 restart 生效 
+```
 
 
 

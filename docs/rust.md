@@ -1,4 +1,4 @@
-rust
+#### 基础命令
 
 - 使用 `cargo new` 命令创建新的项目模板。
 - 使用 `cargo build` 编译项目。

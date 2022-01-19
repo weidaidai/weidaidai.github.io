@@ -13,3 +13,4 @@
 * [json/yaml](/json)
 * [关于swagger](/api)
 * [一些cs基础知识](/一些cs基础知识)
+* [rust](/rust)
