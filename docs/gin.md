@@ -234,3 +234,80 @@ func shoptwo(ctx *gin.Context)  {
 
 ```
 
+重定向
+
+```go
+r := gin.Default()
+//http重定向
+r.GET("/index", func(c *gin.Context) {
+   //c.JSON(http.StatusOK, gin.H{
+   // "status": "ok",
+   //})
+   //跳转到sogo
+   c.Redirect(http.StatusMovedPermanently, "https://www.sogo.com")
+})
+
+//路由重定向
+r.GET("/luyou", func(c *gin.Context) {
+   //跳转到/luyou2对应的路由处理函数
+   c.Request.URL.Path = "/luyou2"  //把请求的URL修改
+   r.HandleContext(c)  //继续后续处理
+})
+r.GET("/luyou2", func(c *gin.Context) {
+   c.JSON(http.StatusOK, gin.H{
+      "message":"路由重定向",
+   })
+})
+r.Run(":9090")
+```
+
+```go
+ErrServiceNotFound         = errors.New("service not found")
+ErrServiceDisabled         = errors.New("service disabled")
+ErrInvalidServiceUrl       = errors.New("invalid service url")
+ErrAccountServiceForbidden = errors.New("account not allowed to login service")
+```
+
+```
+package mysql
+
+import (
+   "database/sql"
+   "errors"
+)
+
+type User struct {
+   Username string
+   Password string
+}
+
+// GetStudentById   通过用户名查询用户
+func GetStudentById(db *sql.DB) (*User, error) {
+   sqlStr := "select *from User where Username=?"
+   U := &User{}
+   err := db.QueryRow(sqlStr, &U.Username).Scan(&U.Username)
+   if err == sql.ErrNoRows {
+      errors.New("没有该用户")
+   }
+   return U, nil
+}
+```
+
+1. 用户访问 服务A，302 跳转到 CAS。（GET 参数包含 服务A 回调地址）
+2. 用户在 CAS 登录，登录成功后带着 Service Ticket 跳转到 服务A 的回调地址。（同时 CAS 的 Session 里也保存了用户 CAS 的登录状态了）
+3. 服务A 后端使用 Service Ticket 请求 CAS 验证是否正确。
+4. CAS 后端返回 Service Ticket 正确，并且提供用户的唯一标识。（之后 服务A 根据唯一标识就知道是自己系统里的哪个用户登录了，顺便再设置一下自己的 Session）
+   以上便结束了 服务A 的登录。
+5. 用户访问 服务B，302 跳转到 CAS。（GET 参数包含 服务B 回调地址）
+6. 因为之前已在 CAS 登录过，直接带着 Service Ticket 跳转到 服务B 的回调地址。（连跳两下挺快的，用户可能都没察觉到）
+7. 服务B 后端使用 Service Ticket 请求 CAS 验证是否正确。
+8. 同上，CAS 后端返回 Service Ticket 正确，并且提供用户的唯一
+
+- `/register` 新用户注册
+- `/login` 【CAS 协议】登录
+- `/authorize` 服务授权
+- `/profile` 个人信息修改
+- `/validate`【CAS 协议】服务验证接口
+
+
+

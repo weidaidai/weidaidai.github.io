@@ -1263,7 +1263,7 @@ func main() {
 
 `<-chan int`是一个只读单向通道（只能从其读取int类型值），可以对其执行接收操作但是不能执行发送操作
 
-## select 和chan
+## select 和chan配套使用
 
 ```go
 import (
@@ -1312,6 +1312,153 @@ func son(flg chan bool, msg chan int) {
 ```
 
 常用控制并发的两种方式sync.WaitGroup和context
+
+## Mutex和RWMuteux 
+
+使用互斥锁（Mutex，全称 mutual exclusion）是为了来保护一个资源不会因为并发操作而引起冲突导致数据不准确。
+
+` Mutex 锁`的两种定义方法
+
+```
+// 第一种
+var lock *sync.Mutex
+lock = new(sync.Mutex)
+
+// 第二种
+lock := &sync.Mutex{}
+```
+
+```go
+package main
+
+import (
+    "fmt"
+    "sync"
+)
+
+func add(count *int, wg *sync.WaitGroup) {
+    for i := 0; i < 1000; i++ {
+        *count = *count + 1
+    }
+    wg.Done()
+}
+
+func main() {
+    var wg sync.WaitGroup
+    count := 0
+    wg.Add(3)
+    go add(&count, &wg)
+    go add(&count, &wg)
+    go add(&count, &wg)
+
+    wg.Wait()
+    fmt.Println("count 的值为：", count)
+}
+```
+
+```go
+// 第一次
+count 的值为： 2854
+
+// 第二次
+count 的值为： 2673
+
+// 第三次
+count 的值为： 2840
+```
+
+
+
+```go
+//开启了三个协程，每个协程分别往 count 这个变量加1000次 1，理论上看，最终的 count 值应试为 3000
+
+func add(count *int, wg *sync.WaitGroup,lock *sync.Mutex) {
+   for i := 0; i < 1000; i++ {
+      //加锁
+      lock.Lock()
+      *count = *count + 1
+      //解锁
+      lock.Unlock()
+   }
+   wg.Done()
+}
+func main() {
+   var wg sync.WaitGroup
+   lock := &sync.Mutex{}
+   count := 0
+   wg.Add(3)
+   go add(&count, &wg,lock)
+   go add(&count, &wg,lock)
+   go add(&count, &wg,lock)
+   wg.Wait()
+   fmt.Println(count)
+}
+```
+
+RWMutex，也是如此，它将程序对资源的访问分为读操作和写操作
+
+- 为了保证数据的安全，它规定了当有人还在读取数据（即读锁占用）时，不允计有人更新这个数据（即写锁会阻塞）
+- 为了保证程序的效率，多个人（线程）读取数据（拥有读锁）时，互不影响不会造成阻塞，它不会像 Mutex 那样只允许有一个人（线程）读取同一个数据。
+
+定义一个 `RWMuteux 锁`，有两种方法
+
+```
+// 第一种
+var lock *sync.RWMutex
+lock = new(sync.RWMutex)
+
+// 第二种
+lock := &sync.RWMutex{}
+```
+
+```go
+package main
+
+import (
+    "fmt"
+    "sync"
+    "time"
+)
+
+func main() {
+    lock := &sync.RWMutex{}
+    lock.Lock()
+
+    for i := 0; i < 4; i++ {
+        go func(i int) {
+            fmt.Printf("第 %d 个协程准备开始... \n", i)
+            lock.RLock()
+            fmt.Printf("第 %d 个协程获得读锁, sleep 1s 后，释放锁\n", i)
+            time.Sleep(time.Second)
+            lock.RUnlock()
+        }(i)
+    }
+
+    time.Sleep(time.Second * 2)
+
+    fmt.Println("准备释放写锁，读锁不再阻塞")
+    // 写锁一释放，读锁就自由了
+    lock.Unlock()
+
+    // 由于会等到读锁全部释放，才能获得写锁
+    // 因为这里一定会在上面 4 个协程全部完成才能往下走
+    lock.Lock()
+    fmt.Println("程序退出...")
+    lock.Unlock()
+}
+第 1 个协程准备开始...
+第 0 个协程准备开始...
+第 3 个协程准备开始...
+第 2 个协程准备开始...
+准备释放写锁，读锁不再阻塞
+第 2 个协程获得读锁, sleep 1s 后，释放锁
+第 3 个协程获得读锁, sleep 1s 后，释放锁
+第 1 个协程获得读锁, sleep 1s 后，释放锁
+第 0 个协程获得读锁, sleep 1s 后，释放锁
+程序退出...
+```
+
+
 
 ## sync.WaitGroup 类型（多个goroutine执行同一件事情）
 
@@ -1884,7 +2031,9 @@ r.URL.Host（client地址）
 
 r.URL.Path（/ 路径)
 
-
+```go
+回调函数
+```
 
 
 

@@ -397,6 +397,140 @@ ENTRYPOINT command param1 param2
 ENTRYPOINT ["dotnet", "HanddayRetail.MallApi.dll"]
 ```
 
+```go
+package main
+
+import (
+	"fmt"
+	"net/http"
+)
+
+func main() {
+	http.HandleFunc("/", HandleHello)
+	server := &http.Server{
+		Addr: ":9090",
+	}
+  fmt.Println("Server startup...")
+	if err := server.ListenAndServe(); err != nil {
+		fmt.Printf("Server startup failed, err:%v\n", err)
+	}
+}
+
+func HandleHello(w http.ResponseWriter, _ *http.Request) {
+	w.Write([]byte("Hello World"))
+}
+
+```
+
+dockerfile
+
+```go
+FROM golang:alpine
+
+# 设置镜像环境变量
+ENV GO111MODULE=on \
+    CGO_ENABLED=0 \
+    GOOS=linux \
+    GOARCH=amd64
+
+# 移动到工作目录：/build
+WORKDIR /build
+
+# 将本目录下代码复制到容器中
+COPY . .
+
+# 将我们的代码编译成二进制可执行文件app
+RUN go build -o app .
+
+# 声明服务端口
+EXPOSE 9090
+
+# 启动容器时运行的命令
+CMD ["/app"]
+
+```
+
+#### 构建镜像[#](https://www.niuwx.cn/posts/go/docker_go/#构建镜像)
+
+使用命令构建镜像。
+
+docker build . -t goweb
+
+#### 使用镜像
+
+docker run -p 9090:9090 --name goweb-app goweb
+
+二进制文件
+
+```bash
+FROM golang:alpine AS builder
+
+# 设置镜像环境变量
+ENV GO111MODULE=on \
+    CGO_ENABLED=0 \
+    GOOS=linux \
+    GOARCH=amd64
+
+# 移动到工作目录：/build
+WORKDIR /build
+
+# 将本目录下代码复制到容器中
+COPY . .
+
+# 将我们的代码编译成二进制可执行文件app
+RUN go build -o app .
+
+###################
+# 最终的小镜像
+###################
+FROM scratch
+
+# 从builder镜像中把/app 拷贝到当前目录
+COPY --from=builder /build/app /
+
+# 需要运行的命令
+ENTRYPOINT ["/app"]
+
+```
+
+如果需要部署的程序还需要用到静态资源，那么还需要将静态资源拷贝到镜像中。
+
+```bash
+FROM golang:alpine AS builder
+
+# 设置镜像环境变量
+ENV GO111MODULE=on \
+    CGO_ENABLED=0 \
+    GOOS=linux \
+    GOARCH=amd64
+
+# 移动到工作目录：/build
+WORKDIR /build
+
+# 将本目录下代码复制到容器中
+COPY . .
+
+# 将我们的代码编译成二进制可执行文件app
+RUN go build -o app .
+
+###################
+# 最终的小镜像
+###################
+FROM scratch
+
+COPY /templates /templates
+COPY /static /static
+
+# 从builder镜像中把/app 拷贝到当前目录
+COPY --from=builder /build/app /
+
+# 需要运行的命令
+ENTRYPOINT ["/app"]
+
+```
+
+
+
 ## 部署多个 docker compose
 
 #### nginx
@@ -445,27 +579,28 @@ docker pull mysql
 ## 编写 docker-compose.yml 文件
 
 ```
-version: '3'
+version: '3.8'
 services:
   mysql:
-    image: mysql
-    container_name: mysql
+    image: mysql:5.7.26
+    container_name: mysql-stu
     ports:
       - "3306:3306"
     volumes:
-    - /mnt/mysql/data:/var/lib/mysql
-    - /mnt/mysql/initdb:/docker-entrypoint-initdb.d
-    - /mnt/mysql/cnf/my.cnf:/etc/my.cnf
-    - /mnt/mysql/cnf/mysql:/etc/mysql
-    - /mnt/mysql/mysql-files:/var/lib/mysql-files
+      - /mnt/mysql/data:/var/lib/mysql
+      - /mnt/mysql/initdb:/docker-entrypoint-initdb.d
+      - /mnt/mysql/cnf/my.cnf:/etc/my.cnf
+      - /mnt/mysql/cnf/mysql:/etc/mysql
+      - /mnt/mysql/mysql-files:/var/lib/mysql-files
     command: [
-            '--character-set-server=utf8mb4',
-            '--collation-server=utf8mb4_unicode_ci',
-            '--max_connections=3000'
+        '--character-set-server=utf8mb4',
+        '--collation-server=utf8mb4_unicode_ci',
+        '--max_connections=3000'
     ]
     environment:
-      MYSQL_ROOT_PASSWORD: "xxxxxxxxxxxxxxx"
+      MYSQL_ROOT_PASSWORD: "123456"
       TZ: "Asia/Shanghai"
+
 ```
 
 ## 配置 mysql root 账户可远程连接
@@ -536,17 +671,40 @@ docker pull nginx
 
 docker run --name nginx -p 80:80 -d nginx
 
->
+>错误问题
 
+配置mysql和redis的环境变量
 
+5.7版本
 
+```bash
+panic: Error 1045: Access denied for user '"root'@'172.17.0.1' (using password: YES)
+#忘记密码然后用
+update mysql_test.user set authentication_string=password('Aa123456') where user='root';
+ #刷新权限
+flush privileges;
+ #退出
+ quit
+# 重新进入
+ mysql -u root -p
+```
 
+> -net host 来启动docker项目
 
+   查询
 
+```sql
+ select host,user,plugin,authentication_string from mysql.user;
+```
 
+1. 添加密码IP远程访问权限：
 
+   ```sql
+   GRANT ALL PRIVILEGES ON *.* TO 'root'@'host' IDENTIFIED BY 'Aa123456' WITH GRANT OPTION;
+   ```
 
+   表示设置指定用户名为root，密码为123456，可访问所有数据库*，只有IP为172.33.5.46这台机器有权限访问。
 
-
-
-
+```javascript
+ALTER USER 'root'@'%' IDENTIFIED WITH mysql_native_password BY 'Aa123456';
+```
