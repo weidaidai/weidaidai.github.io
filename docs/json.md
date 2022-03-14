@@ -1,6 +1,6 @@
 ## JSON
 
-## 用途
+### 用途
 
 **JSON 是存储和传输数据的格式。**
 
@@ -10,7 +10,7 @@
 
 动态网页需要获取数据库时，服务器从数据库查找数据，然后将数据转换为json格式
 
-## JSON 语法规则
+### JSON 语法规则
 
 - 数据是名称/值对
 
@@ -90,7 +90,7 @@ console.log(str)
 </script>
 ```
 
-## XMLHttpRequest() 从服务器获取数据
+### XMLHttpRequest() 从服务器获取数据
 
 ```javascript
 
@@ -105,9 +105,9 @@ xmlhttp.open("GET", "/src/js/json_demo.txt", true);
 xmlhttp.send();
 ```
 
-## JSON.parse() 解析数据
+### JSON.parse() 解析数据
 
-## java script 中可以用json格式来修改查询
+### java script 中可以用json格式来修改查询
 
 访问使用括号表示法访问 
 
@@ -259,3 +259,100 @@ date:
 datetime: 
     -  2018-02-17T15:02:31+08:00    #时间使用ISO 8601格式，时间和日期之间使用T连接，最后使用+代表时区
 ```
+
+## XML
+
+### 语法
+
+XML 指可扩展标记语言（e**X**tensible **M**arkup **L**anguage）。
+
+XML 被设计用来传输和存储数据
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<note>
+<to>Tove</to>
+<from>Jani</from>
+<heading>Reminder</heading>
+<body>Don't forget me this weekend!</body>
+</note>
+```
+
+
+
+XML 文档形成了一种树结构，它从"根部"开始，然后扩展到"枝叶"。
+
+下一行描述文档的**根元素**（像在说："本文档是一个便签"）：
+
+```
+<note>
+```
+
+接下来 4 行描述根的 4 个**子元素**（to, from, heading 以及 body）：
+
+```xml
+<to>Tove</to> 
+<from>Jani</from> 
+<heading>Reminder</heading>
+<body>Don't forget me this weekend!</body>
+```
+
+### XML 命名空间
+
+------
+
+> XML 命名空间提供避免元素命名冲突的方法。
+
+在 XML 中，元素名称是由开发者定义的，当两个不同的文档使用相同的元素名时，就会发生命名冲突。
+
+该 XML 携带某个 HTML 表格和某件家具的信息：
+
+```xml
+
+<h:table>
+<h:tr>
+<h:td>Apples</h:td>
+<h:td>Bananas</h:td>
+</h:tr>
+</h:table>
+
+<f:table>
+<f:name>African Coffee Table</f:name>
+<f:width>80</f:width>
+<f:length>120</f:length>
+</f:table>
+```
+
+转换顺序：先将struct结构体转为map,再将map转为string字符串
+
+struct --> map --> string
+
+type demo struct {
+	Id                    string
+	Name	              string
+}
+func main() {
+
+demos := [{"Id":"1","Name":"zs"},{"Id":"2","Name":"ls"},{"Id":"3","Name":"ww"}]
+
+for _, v := range demos {
+		tmpdata := Struct2Map(v)
+		str, err := json.Marshal(tmpdata)
+		if err != nil {
+			fmt.Println(err)
+		}		
+	fmt.println(string(str))
+ }
+
+}
+//结构体转为map
+func Struct2Map(obj interface{}) map[string]interface{} {
+	t := reflect.TypeOf(obj)
+	v := reflect.ValueOf(obj)
+
+	var data = make(map[string]interface{})
+	for i := 0; i < t.NumField(); i++ {
+		data[t.Field(i).Name] = v.Field(i).Interface()
+	}
+	return data
+}

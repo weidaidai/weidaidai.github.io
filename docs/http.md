@@ -337,6 +337,17 @@ uri  /hello(虚拟目录)
 
 　　锚点作用：打开用户页面时滚动到该锚点位置。如：一个html页面中有一段代码【<div name='r_70732423'>...</div>】，该url的hash为r_70732423
 
+HTTP 协议中有两个与 Cookie 直接相关首部：
+
+- Set-Cookie，由 response 携带，指示 client 存储 cookie 到本地
+- Cookie，由 request 携带，将本地 cookie 传给 server
+
+- Domain：cookie 适用的域名，若不指定，则默认为创建 cookie 的服务器的域名
+- Path：cookie 适用的 path
+- Expires：到期时间，若不指定，则浏览器关闭时即删除
+- Secure：指示是否仅当在 HTTPS 链接上才传输
+- HttpOnly：加以限制，使得 cookie 不能被 JavaScript 脚本访问（意味着不能 JS 不能通过`document.cookie`的方式访问 cookie
+
 ### HTTP和HTTPS区别
 
 ```bash
@@ -358,3 +369,29 @@ HTTP和HTTPS的区别
 4.CA认证中心的证书需要安装在客户机上，用来验证服务器证书的真实性
 ```
 
+### Cookie & Session
+
+- HTTP是无状态协议，服务器不能记录浏览器的访问状态，也就是说服务器不能区分两次请求是否是同一个客户端发出，cookie就是解决HTTP协议无状态的方案之一；
+- cookie是存储key-value对的一个文件，务必记住，它是由服务器将cookie添加到response里一并返回给客户端，然后客户端会自动把response里的cookie接收下来，并且保存到本地，下次发出请求的时候，就会把cookie附加在request里，服务器在根据request里的cookie遍历搜索是否有与之符合的信息
+- cookie由服务器创建，发送给浏览器，最终由浏览器保存；
+
+> Cookie 和 Session 正是用来弥补用户状态追踪的两种机制
+
+  比如 ---发给顾客一张会员卡，除了卡号之外什么信息也不纪录，每次消费时，如果顾客出示该卡片，则店员在店里的纪录本上找到这个卡号对应的纪录添加一些消费信息,
+
+​    Session 是对象存储特定用户会话所需的属性及配置信息 ,**Session是有生命周期**,Session是存储在服务器当中的，所以Session过多，会对服务器产生压力，所以session生命周期也是为了缓解服务器的压力
+
+####   具体步骤
+
+session 信息存储在服务端，服务端负责生成和管理 session 信息，每个 session 会有一个 session id，
+
+server 返回 response 给 client 时会让后者以 cookie 的形式存储 session id，
+
+后续发起 request 请求时，都会在 HTTP 报文的 Cookie 首部中携带 session id，server 根据 id 找到对应的 session 信息
+
+#### c&s总结
+
+cookie机制采用的是在客户端保持状态的方案，而session机制采用的是在服务器端保持状态的方案,
+
+Session是在服务端保存的一个数据结构，用来跟踪用户的状态，这个数据可以保存在集群、数据库、文件中；
+ Cookie是客户端保存用户信息的一种机制，用来记录用户的一些信息，也是实现Session的一种方式
