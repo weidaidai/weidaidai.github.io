@@ -64,7 +64,69 @@ int CVICALLBACK SearchButtonCallback(int panel, int control, int event, void *ca
 }
 ```
 
-这些注释应该有助于你理解代码的每一部分是如何工作的。如果你有任何其他问题或需要进一步的澄清，请告诉我。
+
+
+当然可以。以下是一个简单的例子，演示如何在LabWindows/CVI中实现搜索功能。注意，这是一个基础示例，只是为了展示基本概念，实际应用可能需要更复杂的实现。
+
+1. **UI界面设计**:
+   - 在User Interface Editor中，创建一个新的UI面板。
+   - 添加一个文本框（Control -> Numeric -> Numeric Control），命名为 `searchTextBox`。
+   - 添加一个按钮（Control -> Button），命名为 `searchButton`。
+   - 添加一个列表框（Control -> Ring Slide -> Ring Slide Control），命名为 `resultsListBox`。
+
+2. **编写代码**:
+
+```c
+#include <userint.h>
+#include "toolbox.h"   // 引入必要的头文件
+
+// 假设你的数据源是一个字符串数组
+char *data[] = {
+    "example1: http://example1.com",
+    "example2: http://example2.com",
+    "example3: http://example3.com"
+};
+
+int main(int argc, char *argv[])
+{
+    int panelHandle;
+    
+    // 加载你在User Interface Editor中创建的面板
+    panelHandle = LoadPanel(0, "YourUICode.uir", PANEL);
+    
+    DisplayPanel(panelHandle);
+    RunUserInterface();
+    
+    DiscardPanel(panelHandle);
+    return 0;
+}
+
+int CVICALLBACK SearchButtonCallback(int panel, int control, int event, void *callbackData, int eventData1, int eventData2)
+{
+    if (event == EVENT_COMMIT) {
+        char searchTerm[100];
+        int i;
+
+        // 获取用户在文本框中输入的搜索词
+        GetCtrlVal(panel, PANEL_searchTextBox, searchTerm);
+
+        // 清空列表框
+        DeleteListItem(panel, PANEL_resultsListBox, 0, -1);
+
+        // 遍历数据源查找匹配项
+        for (i = 0; i < sizeof(data)/sizeof(data[0]); i++) {
+            if (strstr(data[i], searchTerm) != NULL) {
+                InsertListItem(panel, PANEL_resultsListBox, -1, data[i], i);
+            }
+        }
+    }
+    return 0;
+}
+```
+
+在这个示例中，当用户在`searchTextBox`文本框中输入搜索词并点击`searchButton`按钮时，程序会遍历数据源并将匹配项显示在`resultsListBox`列表框中。
+
+这只是一个简单示例，你可能需要根据实际需求进行调整和优化。
 
 
 
