@@ -1,0 +1,45 @@
+#include <cvirte.h>     
+#include <userint.h>
+
+/**
+ * @brief 模拟测试函数
+ * 
+ * @return 0表示失败，其他值表示成功
+ */
+int TestFunction() {
+    // 在此编写实际的测试函数实现
+    // 这里只是一个示例，可能需要根据实际情况修改
+    return rand() % 2;  // 模拟一个可能的失败情况
+}
+
+/**
+ * @brief 重复测试函数，最多进行两次重试
+ * 
+ * @return 0表示测试失败，其他值表示测试成功
+ */
+int RepeatTest() {
+    int maxRetries = 2;     // 设置最大重试次数
+    int retryCount = 0;     // 记录当前重试次数
+    int result;             // 存储测试函数的返回值
+
+    do {
+        result = TestFunction();  // 执行测试函数
+
+        if (result == 0) {
+            // 函数执行失败
+            printf("Test failed. Retrying (%d/%d)\n", retryCount + 1, maxRetries);
+            retryCount++;
+        } else {
+            // 函数执行成功
+            printf("Test succeeded!\n");
+        }
+
+    } while (result == 0 && retryCount < maxRetries);
+
+    if (retryCount == maxRetries) {
+        // 达到最大重试次数，测试失败
+        printf("Maximum retries reached. Test failed.\n");
+    }
+
+    return result;  // 返回测试结果，0 表示失败，其他值表示成功
+}
